@@ -1,7 +1,12 @@
-import { Vulnerability } from './entities';
+import { Vulnerability } from '../entities/vulnerability';
 
+//Used to split output in vulnerability
 const separator = '==================================================================================';
 
+/**
+ * Parse stdout string into a array of vulnerabilities
+ * @param stdout horusec analysis result
+ */
 export function parseStdoutToVulnerabilities(stdout: string): Vulnerability[] {
     try {
         let splitedOutput = stdout.split(separator);
@@ -18,12 +23,21 @@ export function parseStdoutToVulnerabilities(stdout: string): Vulnerability[] {
     }
 }
 
+/**
+ * Remove empty jsons and add brackets
+ * @param jsonArrayString parsed string of vulnerabilities array
+ */
 function addArrayBracket(jsonArrayString: string): string {
     jsonArrayString = '[' + jsonArrayString + ']';
     jsonArrayString = jsonArrayString.split('{},').join('');
     return jsonArrayString.split('},]').join('}]');
 }
 
+/**
+ * Split json output into fields to format into json valid fields
+ * @param outputSplited output vuln 
+ * @param jsonArrayString vulnerabilities array after parse
+ */
 function parseToJson(outputSplited: string, jsonArrayString: string): string {
     let vulnJson = '';
 
@@ -43,11 +57,21 @@ function parseToJson(outputSplited: string, jsonArrayString: string): string {
     return jsonArrayString;
 }
 
+/**
+ * Joins parsed field with the entire json
+ * @param splitedField vuln json field
+ * @param vulnJson entire json string
+ */
 function formatField(splitedField: string, vulnJson: string): string {
     let jsonField = getJsonField(splitedField);
     return vulnJson + jsonField;
 }
 
+/**
+ * Validate if is a valid output
+ * Parse field to json valid format
+ * @param splitedOutputField vuln json field
+ */
 function getJsonField(splitedOutputField: string): string {
     let jsonField = '';
 
@@ -63,6 +87,10 @@ function getJsonField(splitedOutputField: string): string {
     return jsonField.replace(':', '":"');
 }
 
+/**
+ * Set json field key to lower case
+ * @param jsonField vuln json field
+ */
 function toLowerCase(jsonField: string): string {
     return jsonField.replace(
         jsonField.charAt(1).valueOf(),
@@ -70,12 +98,20 @@ function toLowerCase(jsonField: string): string {
     );
 }
 
+/**
+ * Remove extra white space from each json field
+ * @param jsonField vuln json field
+ */
 function removeWhiteSpace(jsonField: string): string {
     let index = jsonField.indexOf(':');
     jsonField = jsonField.replace(jsonField.charAt(index + 1).valueOf(), '');
     return jsonField;
 }
 
+/**
+ * Remove some characters that may break json parse
+ * @param outputSplited stdout splited vulnerability
+ */
 function removeInvalidOutputs(outputSplited: string): string {
     outputSplited = removeDetailsLineBreakDetails(outputSplited);
     outputSplited = removeDetailsLineBreakCode(outputSplited);
@@ -83,6 +119,10 @@ function removeInvalidOutputs(outputSplited: string): string {
     return outputSplited;
 }
 
+/**
+ * Remove line breaks from details json field to avoid break json parse
+ * @param outputSplited stdout splited vulnerability
+ */
 function removeDetailsLineBreakDetails(outputSplited: string): string {
     let indexDetails = outputSplited.indexOf('Details:');
     let indexType = outputSplited.indexOf('Type:');
@@ -93,6 +133,10 @@ function removeDetailsLineBreakDetails(outputSplited: string): string {
     return outputSplited.split(detailsOriginal).join(detailsFinal);
 }
 
+/**
+ * Remove line breaks from code json field to avoid break json parse
+ * @param outputSplited stdout splited vulnerability
+ */
 function removeDetailsLineBreakCode(outputSplited: string): string {
     let indexDetails = outputSplited.indexOf('details:');
     let indexCode = outputSplited.indexOf('Code:');
@@ -101,6 +145,10 @@ function removeDetailsLineBreakCode(outputSplited: string): string {
     return outputSplited.split(codeOriginal).join(detailsFormated);
 }
 
+/**
+ * Remove single and double quotation marks from code json field to avoid break json parse
+ * @param outputSplited stdout splited vulnerability
+ */
 function removeQuotationMarksCode(outputSplited: string): string {
     let indexDetails = outputSplited.indexOf('details:');
     let indexCode = outputSplited.indexOf('Code:');
@@ -110,12 +158,20 @@ function removeQuotationMarksCode(outputSplited: string): string {
     return outputSplited.split(codeOriginal).join(detailsFormated);
 }
 
+/**
+ * Remove cert message from horusec container stdout
+ * @param output container stdout
+ */
 export function removeCertMessages(output: string): string {
     output = output.split('/certs/server/cert.pem: OK').join('');
     output = output.split('/certs/client/cert.pem: OK').join('');
     return output;
 }
 
+/**
+ * Validates if parsed string in a valid json
+ * @param vulnJson parsed string json
+ */
 function checkValidStringJson(vulnJson: string): boolean {
     try {
         JSON.parse(vulnJson);
