@@ -2,17 +2,19 @@
 
 This project is an extension for visual studio code of the horusec security analysis tool.
 
+## What is Horusec?
+Horusec is an open source tool that improves identification of vulnerabilities in your project with just one command.
+
+### For more details see our [DOCUMENTATION](https://zup-products.gitbook.io/horusec)
+
 ## Usage
 
-### Requirements for usage horusec in vscode
+### Requirements for using horusec
 * docker
-
-### Install
-@TODO
 
 ### Running Horusec
 
-For horusec to analyze the code of the current workspace, it is necessary to open the command palette (`ctrl + shift + p or click on view and select the Command Palette option`) and type the command `Horusec Start`.
+For horusec to analyze the code of the current workspace, it is necessary to open the command palette (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> or <kbd>F1</kbd>) and type the command `Horusec Start`.
 
 After executing the command, a notification will appear informing you that the analysis has started, also when the analysis is finished.
 
