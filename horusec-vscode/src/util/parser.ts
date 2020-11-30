@@ -163,9 +163,8 @@ function removeQuotationMarksCode(outputSplited: string): string {
  * @param output container stdout
  */
 export function removeCertMessages(output: string): string {
-    output = output.split('/certs/server/cert.pem: OK').join('');
-    output = output.split('/certs/client/cert.pem: OK').join('');
-    return output;
+    let index = output.indexOf(separator);
+    return output.slice(index, output.length);
 }
 
 /**
