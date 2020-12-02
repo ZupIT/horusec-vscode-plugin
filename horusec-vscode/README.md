@@ -5,7 +5,7 @@ This project is an extension for visual studio code of the horusec security anal
 ## What is Horusec?
 Horusec is an open source tool that improves identification of vulnerabilities in your project with just one command.
 
-### For more details see our [DOCUMENTATION](https://zup-products.gitbook.io/horusec)
+### For more details see our [DOCUMENTATION](https://docs.horusec.io)
 
 ## Usage
 
