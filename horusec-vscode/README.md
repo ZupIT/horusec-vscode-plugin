@@ -20,7 +20,7 @@ After executing the command, a notification will appear informing you that the a
 
 The results will be presented in a file and in the code with the probable vulnerability.
 
-<p align="center" margin="20 0"><img src="../assets/analysis_result.png" alt="result_horusec" width="100%" style="max-width:100%;"/></p>
+<p align="center" margin="20 0"><img src="./assets/analysis_result.png" alt="result_horusec" width="100%" style="max-width:100%;"/></p>
 
 ## Communication
 

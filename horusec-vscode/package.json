@@ -5,7 +5,7 @@
 	"version": "0.0.1",
 	"publisher": "ZupInnovation",
 	"repository": "https://github.com/ZupIT/horusec-extensions",
-	"icon": "horus_icon.png",
+	"icon": "./assets/horus_icon.png",
 	"engines": {
 		"vscode": "^1.51.0"
 	},
