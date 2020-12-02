@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
+import { v4 as uuidv4 } from 'uuid';
 import { subscribeToDocumentChanges } from './util/diagnostics';
 import { parseStdoutToVulnerabilities, removeCertMessages } from './util/parser';
 
@@ -32,7 +33,8 @@ function runHorusec(context: vscode.ExtensionContext) {
  * @param context vscode extension context
  */
 function execStartCommand(context: vscode.ExtensionContext) {
-	const command = `docker run --privileged -v ${vscode.workspace.rootPath}:/horusec horuszup/horusec-cli:v1.5.0 -p /horusec`;
+	const startCommandUUID = uuidv4();
+	const command = `docker run --privileged --rm -v ${vscode.workspace.rootPath}:/tmp/${startCommandUUID} horuszup/horusec-cli:v1.5.0 -p /tmp/${startCommandUUID}`;
 
 	exec(command, (error: any, stdout: any) => {
 		if (error) {
