@@ -14,7 +14,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Running Lint
-        shell: bash
+      - name: lint
         run: make lint-horusec-vscode
           
