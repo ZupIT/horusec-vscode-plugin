@@ -1,0 +1,20 @@
+name: HorusecVsCode
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  horusec-security:
+    name: lint
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Running Lint
+        shell: bash
+        run: make lint-horusec-vscode
+          
