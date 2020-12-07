@@ -34,7 +34,7 @@ function runHorusec(context: vscode.ExtensionContext) {
  */
 function execStartCommand(context: vscode.ExtensionContext) {
 	const startCommandUUID = uuidv4();
-	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`
+	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
 	const command = `docker run --privileged --rm -v ${vscode.workspace.rootPath}:${analysisFolder} horuszup/horusec-cli:v1.5.0 -p ${analysisFolder}`;
 
 	exec(command, (error: any, stdout: any) => {

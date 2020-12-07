@@ -1,0 +1,25 @@
+name: HorusecVsCode
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  horusec-security:
+    name: install-lint
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+    - name: Set up Node 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+      id: node
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Install
+      run: make install-horusec-vscode 
+    - name: Lint
+      run: make lint-horusec-vscode
