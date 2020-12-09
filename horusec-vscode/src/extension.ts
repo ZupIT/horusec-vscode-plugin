@@ -3,11 +3,18 @@ import { exec } from 'child_process';
 import { v4 as uuidv4 } from 'uuid';
 import { subscribeToDocumentChanges } from './util/diagnostics';
 import { parseStdoutToVulnerabilities, removeCertMessages } from './util/parser';
+import { TreeNodeProvider } from './provider';
 
 const vulnerabilitiesDiagnostics = vscode.languages.createDiagnosticCollection("vulnerabilities");
 
 export function activate(context: vscode.ExtensionContext) {
+	const provider = new TreeNodeProvider(context, false);
+	const horusecView = vscode.window.createTreeView("horusec-view", { treeDataProvider: provider });
+	const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 	context.subscriptions.push(vulnerabilitiesDiagnostics);
+	context.subscriptions.push(provider);
+	context.subscriptions.push(status);
+	context.subscriptions.push(horusecView);
 
 	context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
 		async () => runHorusec(context)));
