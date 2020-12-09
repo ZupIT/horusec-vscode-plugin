@@ -10,8 +10,8 @@ let horusecView: vscode.TreeView<any>;
 const vulnerabilitiesDiagnostics = vscode.languages.createDiagnosticCollection('vulnerabilities');
 
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
-statusLoading.text = 'Security analysis running';
-statusLoading.tooltip = 'Hold on! Horusec started to analysis your code.';
+statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
+statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vulnerabilitiesDiagnostics);
@@ -29,9 +29,11 @@ export function activate(context: vscode.ExtensionContext) {
  */
 function setupHorusecView(context: vscode.ExtensionContext) {
 	provider = new TreeNodeProvider(context, false);
+
 	horusecView = vscode.window.createTreeView('horusec-view', { treeDataProvider: provider });
 	horusecView.title = 'Horusec';
 	horusecView.message = 'When Horusec performs an analysis of your code and finds vulnerabilities it will show them below!';
+
 	context.subscriptions.push(provider);
 	context.subscriptions.push(horusecView);
 }
@@ -42,9 +44,11 @@ function setupHorusecView(context: vscode.ExtensionContext) {
  * @param context vscode extension context
  */
 function runHorusec(context: vscode.ExtensionContext) {
+	vscode.window.showOpenDialog();
+
 	if (vscode.workspace.rootPath === undefined) {
-		vscode.window.showErrorMessage('No valid workspace found.');
-		return;
+		vscode.window.showErrorMessage('Horusec: No valid workspace found.');
+		return;																																																																																																																																																																																																																																								
 	}
 
 	vscode.window.showInformationMessage(`Hold on! Horusec started to analysis your code.`);
@@ -69,7 +73,7 @@ function execStartCommand(context: vscode.ExtensionContext) {
 		} else {
 			updateVulnDiagnotics(context, stdout);
 			openFileWithResult(removeCertMessages(stdout));
-			vscode.window.showInformationMessage(`Analysis finished with success!`);
+			vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
 		}
 		statusLoading.hide();
 	});
