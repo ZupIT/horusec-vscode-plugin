@@ -33,11 +33,7 @@ function runHorusec(context: vscode.ExtensionContext) {
  * @param context vscode extension context
  */
 function execStartCommand(context: vscode.ExtensionContext) {
-	const startCommandUUID = uuidv4();
-	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
-	const command = `docker run --privileged --rm -v ${vscode.workspace.rootPath}:${analysisFolder} horuszup/horusec-cli:v1.5.0 -p ${analysisFolder}`;
-
-	exec(command, (error: any, stdout: any) => {
+	exec(getCommand(), (error: any, stdout: any) => {
 		if (error) {
 			vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
 			console.log('error', error);
@@ -85,6 +81,17 @@ function updateVulnDiagnotics(context: vscode.ExtensionContext, stdout: string) 
 	} catch (error) {
 		console.log(error);
 	}
+}
+
+function getCommand(): string {
+	const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`
+	const startCommandUUID = uuidv4();
+	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
+	const bindVolume = `-v ${vscode.workspace.rootPath}:${analysisFolder}`
+	const cliImage = `horuszup/horusec-cli:v1.6.0`
+	const horusecStart = `horusec start -p ${analysisFolder} -P ${vscode.workspace.rootPath}`
+
+	return `docker run ${dockerSock} ${bindVolume} ${cliImage} ${horusecStart}`;
 }
 
 // this method is called when your extension is deactivated
