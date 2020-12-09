@@ -6,7 +6,7 @@ import { parseStdoutToVulnerabilities, removeCertMessages } from './util/parser'
 import { TreeNodeProvider } from './provider';
 
 let provider: TreeNodeProvider;
-let horusecView: vscode.TreeView<any>;
+let horusecView: vscode.Disposable;
 const vulnerabilitiesDiagnostics = vscode.languages.createDiagnosticCollection('vulnerabilities');
 
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
@@ -28,11 +28,13 @@ export function activate(context: vscode.ExtensionContext) {
  * @param context vscode extension context
  */
 function setupHorusecView(context: vscode.ExtensionContext) {
-	provider = new TreeNodeProvider(context, false);
-	horusecView = vscode.window.createTreeView('horusec-view', { treeDataProvider: provider });
-	horusecView.title = 'Horusec';
-	horusecView.message = 'When Horusec performs an analysis of your code and finds vulnerabilities it will show them below!';
-	context.subscriptions.push(provider);
+	// provider = new TreeNodeProvider();
+	provider = new TreeNodeProvider();
+	// horusecView = vscode.window.createTreeView('horusec-view', { treeDataProvider: provider });
+	horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
+	// horusecView.title = 'Horusec';
+	// horusecView.message = 'When Horusec performs an analysis of your code and finds vulnerabilities it will show them below!';
+	// context.subscriptions.push(provider);
 	context.subscriptions.push(horusecView);
 }
 
@@ -71,6 +73,7 @@ function execStartCommand(context: vscode.ExtensionContext) {
 			openFileWithResult(removeCertMessages(stdout));
 			vscode.window.showInformationMessage(`Analysis finished with success!`);
 		}
+		horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
 		statusLoading.hide();
 	});
 }
@@ -101,11 +104,14 @@ function openFileWithResult(stdout: string) {
 function updateVulnDiagnotics(context: vscode.ExtensionContext, stdout: string) {
 	try {
 		vulnerabilitiesDiagnostics.clear();
+		const allVulnerabilities = parseStdoutToVulnerabilities(stdout);
+
+		provider.insertVulnerabilities(allVulnerabilities);
 
 		subscribeToDocumentChanges(
 			context,
 			vulnerabilitiesDiagnostics,
-			parseStdoutToVulnerabilities(stdout)
+			allVulnerabilities
 		);
 	} catch (error) {
 		console.log(error);
