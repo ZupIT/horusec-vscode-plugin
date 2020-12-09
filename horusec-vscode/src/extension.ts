@@ -12,10 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
 		async () => runHorusec()));
 
-	context.subscriptions.push(vscode.workspace.onDidDeleteFiles(deleted => {
-		deleted.files.forEach(uri => {
-			vulnDiagnostics.delete(uri);
-		});
+	context.subscriptions.push(vscode.workspace.createFileSystemWatcher('**/*.*').onDidDelete(uri => {
+		vulnDiagnostics.delete(uri);
 	}));
 }
 
@@ -93,7 +91,7 @@ function getCommand(): string {
 	const startCommandUUID = uuidv4();
 	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
 	const bindVolume = `-v ${vscode.workspace.rootPath}:${analysisFolder}`;
-	const cliImage = `test`;
+	const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
 	const horusecStart = `horusec start -p ${analysisFolder} -P ${vscode.workspace.rootPath}`;
 
 	return `docker run ${dockerSock} ${bindVolume} ${cliImage} ${horusecStart}`;
