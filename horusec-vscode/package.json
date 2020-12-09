@@ -5,7 +5,7 @@
 	"version": "1.5.0",
 	"publisher": "ZupInnovation",
 	"repository": "https://github.com/ZupIT/horusec-extensions/tree/master/horusec-vscode",
-	"icon": "assets/horus_icon.png",
+	"icon": "https://github.com/ZupIT/horusec-extensions/blob/master/horusec-vscode/assets/horus_icon.png?raw=true",
 	"engines": {
 		"vscode": "^1.51.0"
 	},
@@ -30,22 +30,41 @@
 			"horusec-container": [
 				{
 					"id": "horusec-view",
-					"name": "Horusec"
+					"name": "Horusec",
+					"contextualTitle": "assets/horus_icon_white.svg"
 				}
 			]
 		},
 		"menus": {
-			"view/title": [],
-			"view/item/context": [
+			"view/title": [
 				{
-					"command": "horusec.start"
+					"command": "horusec.start",
+					"when": "view == horusec-view",
+					"group": "navigation"
+				},
+				{
+					"command": "horusec.stop",
+					"when": "view == horusec-view",
+					"group": "navigation"
 				}
 			]
 		},
 		"commands": [
 			{
 				"command": "horusec.start",
-				"title": "Horusec Start"
+				"title": "Horusec Start",
+				"icon": {
+					"light": "assets/light/start.svg",
+					"dark": "assets/dark/start.svg"
+				  }
+			},
+			{
+				"command": "horusec.stop",
+				"title": "Horusec Stop",
+				"icon": {
+					"light": "assets/light/stop.svg",
+					"dark": "assets/dark/stop.svg"
+				  }
 			}
 		]
 	},
