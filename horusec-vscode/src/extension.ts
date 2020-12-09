@@ -5,20 +5,37 @@ import { subscribeToDocumentChanges } from './util/diagnostics';
 import { parseStdoutToVulnerabilities, removeCertMessages } from './util/parser';
 import { TreeNodeProvider } from './provider';
 
-const vulnerabilitiesDiagnostics = vscode.languages.createDiagnosticCollection("vulnerabilities");
+let provider: TreeNodeProvider;
+let horusecView: vscode.TreeView<any>;
+const vulnerabilitiesDiagnostics = vscode.languages.createDiagnosticCollection('vulnerabilities');
+
+const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+statusLoading.text = 'Security analysis running';
+statusLoading.tooltip = 'Hold on! Horusec started to analysis your code.';
 
 export function activate(context: vscode.ExtensionContext) {
-	const provider = new TreeNodeProvider(context, false);
-	const horusecView = vscode.window.createTreeView("horusec-view", { treeDataProvider: provider });
-	const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 	context.subscriptions.push(vulnerabilitiesDiagnostics);
-	context.subscriptions.push(provider);
-	context.subscriptions.push(status);
-	context.subscriptions.push(horusecView);
+	context.subscriptions.push(statusLoading);
+
+	setupHorusecView(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
-		async () => runHorusec(context)));
+		async () => runHorusec(context))
+	);
 }
+/**
+ * Setup horusec view initial content
+ * @param context vscode extension context
+ */
+function setupHorusecView(context: vscode.ExtensionContext) {
+	provider = new TreeNodeProvider(context, false);
+	horusecView = vscode.window.createTreeView('horusec-view', { treeDataProvider: provider });
+	horusecView.title = 'Horusec';
+	horusecView.message = 'When Horusec performs an analysis of your code and finds vulnerabilities it will show them below!';
+	context.subscriptions.push(provider);
+	context.subscriptions.push(horusecView);
+}
+
 
 /**
  * Validates workspace and show message that analysis has started
@@ -40,6 +57,7 @@ function runHorusec(context: vscode.ExtensionContext) {
  * @param context vscode extension context
  */
 function execStartCommand(context: vscode.ExtensionContext) {
+	statusLoading.show();
 	const startCommandUUID = uuidv4();
 	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
 	const command = `docker run --privileged --rm -v ${vscode.workspace.rootPath}:${analysisFolder} horuszup/horusec-cli:v1.5.0 -p ${analysisFolder}`;
@@ -48,12 +66,12 @@ function execStartCommand(context: vscode.ExtensionContext) {
 		if (error) {
 			vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
 			console.log('error', error);
-			return;
+		} else {
+			updateVulnDiagnotics(context, stdout);
+			openFileWithResult(removeCertMessages(stdout));
+			vscode.window.showInformationMessage(`Analysis finished with success!`);
 		}
-
-		updateVulnDiagnotics(context, stdout);
-		openFileWithResult(removeCertMessages(stdout));
-		vscode.window.showInformationMessage(`Analysis finished with success!`);
+		statusLoading.hide();
 	});
 }
 

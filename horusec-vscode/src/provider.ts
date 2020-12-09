@@ -10,18 +10,18 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<any> {
   }
 
   getTreeItem(node: any = { label: '' }): vscode.TreeItem | Thenable<vscode.TreeItem> {
-    let treeItem: vscode.TreeItem = new vscode.TreeItem(node.label + (node.pathLabel ? (" " + node.pathLabel) : ""));
+    let treeItem: vscode.TreeItem = new vscode.TreeItem(node.label + (node.pathLabel ? (' ' + node.pathLabel) : ''));
     treeItem.id = node.id;
     treeItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
     treeItem.description = node.label;
-    treeItem.label = "";
+    treeItem.label = '';
     treeItem.tooltip = node.tooltip;
 
     if (node.isFolder === true) {
-      treeItem.contextValue = "folder";
+      treeItem.contextValue = 'folder';
     }
     else if (!node.isRootTagNode && !node.isWorkspaceNode && !node.isStatusNode) {
-      treeItem.contextValue = "file";
+      treeItem.contextValue = 'file';
     }
 
     return treeItem;
