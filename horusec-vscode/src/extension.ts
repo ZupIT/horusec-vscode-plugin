@@ -84,12 +84,12 @@ function updateVulnDiagnotics(context: vscode.ExtensionContext, stdout: string) 
 }
 
 function getCommand(): string {
-	const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`
+	const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`;
 	const startCommandUUID = uuidv4();
 	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
-	const bindVolume = `-v ${vscode.workspace.rootPath}:${analysisFolder}`
-	const cliImage = `horuszup/horusec-cli:v1.6.0`
-	const horusecStart = `horusec start -p ${analysisFolder} -P ${vscode.workspace.rootPath}`
+	const bindVolume = `-v ${vscode.workspace.rootPath}:${analysisFolder}`;
+	const cliImage = `horuszup/horusec-cli:v1.6.0`;
+	const horusecStart = `horusec start -p ${analysisFolder} -P ${vscode.workspace.rootPath}`;
 
 	return `docker run ${dockerSock} ${bindVolume} ${cliImage} ${horusecStart}`;
 }
