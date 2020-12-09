@@ -9,11 +9,10 @@ import { Vulnerability } from '../entities/vulnerability';
  * @param vulnDiagnostics vulnerabilities diagnotics
  * @param vulnerabilities vulnerabilities found in horusec analysis
  */
-export function refreshDiagnostics(document: vscode.TextDocument,
+function refreshDiagnostics(document: vscode.TextDocument,
     vulnDiagnostics: vscode.DiagnosticCollection, vulnerabilities: Vulnerability[]): void {
     const diagnostics: vscode.Diagnostic[] = [];
     vulnerabilities.forEach(vulnerability => {
-
         if (document && path.basename(document.uri.fsPath) === getFilename(vulnerability.file)) {
             diagnostics.push(createDiagnostic(document, vulnerability));
         }
@@ -107,41 +106,20 @@ function createDiagnosticPosition(character: number,
 
 /**
  * Send diagnotics changes when one of listed actions happens
- * @param context vscode extension context
  * @param vulnDiagnostics vulnerabilities diagnotics
  * @param vulnerabilities vulnerabilities found in horusec analysis
  */
-export function subscribeToDocumentChanges(context: vscode.ExtensionContext,
-    vulnDiagnostics: vscode.DiagnosticCollection, vulnerabilities: Vulnerability[]): void {
-    if (vscode.window.activeTextEditor) {
-        refreshDiagnostics(
-            vscode.window.activeTextEditor.document,
-            vulnDiagnostics,
-            vulnerabilities
-        );
-    }
-
-    context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(editor => {
-            if (editor) {
-                refreshDiagnostics(
-                    editor.document,
-                    vulnDiagnostics,
-                    vulnerabilities
-                );
-            }
-        })
-    );
-
-    context.subscriptions.push(
-        vscode.workspace.onDidChangeTextDocument(e => {
+export function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection,
+    vulnerabilities: Vulnerability[]): void {
+    vulnerabilities.forEach(vulnerability => {
+        vscode.workspace.openTextDocument(vulnerability.file).then(document => {
             refreshDiagnostics(
-                e.document,
+                document,
                 vulnDiagnostics,
                 vulnerabilities
             );
-        })
-    );
+        });
+    });
 }
 
 /**
