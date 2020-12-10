@@ -1,0 +1,26 @@
+{
+  "horusecCliHorusecApiUri": "http://localhost:8000",
+  "horusecCliTimeoutInSecondsRequest": 300,
+  "horusecCliTimeoutInSecondsAnalysis": 600,
+  "horusecCliMonitorRetryInSeconds": 15,
+  "horusecCliRepositoryAuthorization": "00000000-0000-0000-0000-000000000000",
+  "horusecCliPrintOutputType": "",
+  "horusecCliJsonOutputFilepath": "",
+  "horusecCliTypesOfVulnerabilitiesToIgnore": "",
+  "horusecCliFilesOrPathsToIgnore": "**/dist/**",
+  "horusecCliReturnErrorIfFoundVulnerability": false,
+  "horusecCliProjectPath": "./",
+  "horusecCliFalsePositiveHashes": "",
+  "horusecCliRiskAcceptHashes": "",
+  "horusecCliWorkDir": {
+    "go":         [],
+    "csharp":     [],
+    "ruby":       [],
+    "python":     [],
+    "java" :      [],
+    "kotlin":     [],
+    "javaScript": [],
+    "leaks":      [],
+    "hcl":        []
+  }
+}

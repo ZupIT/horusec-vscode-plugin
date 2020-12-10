@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 
 import { Analysis, AnalysisVulnerability } from '../entities/vulnerability';
 
@@ -8,7 +7,7 @@ function refreshDiagnostics(document: vscode.TextDocument,
     const diagnostics: vscode.Diagnostic[] = [];
 
     analysisVulnerabilities.forEach(analysisVulnerability => {
-        if (document && path.basename(document.uri.fsPath) === getFilename(getFilepath(analysisVulnerability.vulnerabilities.file))) {
+        if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerabilities.file)) {
             diagnostics.push(createDiagnostic(document, analysisVulnerability));
         }
     });
@@ -79,10 +78,6 @@ export function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCol
             );
         });
     });
-}
-
-function getFilename(filePath: string): string {
-    return filePath.replace(/^.*[\\\/]/, '');
 }
 
 function getDetails(details: string): string {
