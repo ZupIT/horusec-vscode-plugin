@@ -58,7 +58,7 @@ function startHorusec() {
 
 function execStopCommand() {
     exec(getRemoveContainerCommand(), (error: any) => {
-        if (error) {
+        if (error && !error.stack.contains('No such container: horusec-cli')) {
             vscode.window.showErrorMessage(`Horusec stop failed: ${error.message}`);
             console.log('error', error);
         }

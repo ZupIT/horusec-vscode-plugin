@@ -107,11 +107,15 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
 
     private createVulnerabilityInFileToTreeItem(currentVulnerability: Vulnerability): TreeItem {
         const vuln = new TreeItem(currentVulnerability.details);
+        const basePath: string = vscode.workspace.rootPath || '';
         vuln.command = {
             command: 'horusec.open',
             title: 'Vulnerability',
             arguments: [
-                currentVulnerability,
+                {
+                    ...currentVulnerability,
+                    file: path.join(basePath, currentVulnerability.file)
+                },
             ]
         };
         vuln.iconPath = this.getIconPathBySeverity(currentVulnerability.severity);
