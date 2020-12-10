@@ -14,7 +14,11 @@ statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
 
 export function activate(context: vscode.ExtensionContext) {
+	provider = new TreeNodeProvider();
+	horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
+	context.subscriptions.push(horusecView);
 	context.subscriptions.push(vulnDiagnostics);
+	context.subscriptions.push(statusLoading);
 
 	context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
 		async () => runHorusec()));
@@ -23,21 +27,6 @@ export function activate(context: vscode.ExtensionContext) {
 		vulnDiagnostics.delete(uri);
 	}));
 }
-/**
- * Setup horusec view initial content
- * @param context vscode extension context
- */
-function setupHorusecView(context: vscode.ExtensionContext) {
-	// provider = new TreeNodeProvider();
-	provider = new TreeNodeProvider();
-	// horusecView = vscode.window.createTreeView('horusec-view', { treeDataProvider: provider });
-	horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
-	// horusecView.title = 'Horusec';
-	// horusecView.message = 'When Horusec performs an analysis of your code and finds vulnerabilities it will show them below!';
-	// context.subscriptions.push(provider);
-	context.subscriptions.push(horusecView);
-}
-
 
 /**
  * Validates workspace and show message that analysis has started
@@ -48,8 +37,6 @@ function runHorusec() {
 		return;
 	}
 
-	statusLoading.show();
-
 	vscode.window.showInformationMessage(`Hold on! Horusec started to analysis your code.`);
 	execStartCommand();
 }
@@ -59,6 +46,7 @@ function runHorusec() {
  * Show information message that analysis has finished
  */
 function execStartCommand() {
+	statusLoading.show();
 	exec(getCommand(), (error: any, stdout: any) => {
 		if (error) {
 			vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
