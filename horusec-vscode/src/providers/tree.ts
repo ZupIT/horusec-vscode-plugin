@@ -4,12 +4,12 @@ import { Vulnerability } from '../entities/vulnerability';
 import { createDiagnosticRange } from '../util/diagnostics';
 
 class TreeItem extends vscode.TreeItem {
-  children: TreeItem[]|undefined;
+  children: TreeItem[] | undefined;
 
   constructor(label: string, children?: TreeItem[]) {
     super(
-        label,
-        children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
+      label,
+      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
     );
     this.children = children;
   }
@@ -27,11 +27,11 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
     this.resetTree();
   }
 
-  public getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
+  public getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
-  public getChildren(element?: TreeItem|undefined): vscode.ProviderResult<TreeItem[]> {
+  public getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
     if (element === undefined) {
       return this.data;
     }
@@ -49,66 +49,7 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
     this._onDidChangeTreeData.fire();
   }
 
-  private parseVulnerabilitiesToTreeItens(vulnerabilities: Vulnerability[]): any{
-    const allTreeItens = vulnerabilities.reduce((previousVulnerability, currentVulnerability) => {
-      var names = currentVulnerability.file.replace(vscode.workspace.rootPath + '/', '').split('/');
-
-      names.reduce((previousName: any, currentName: any, index: number) => {
-        let temp: TreeItem = previousName.find((o: any) => o.label === currentName);
-
-        if (!temp) {
-          temp = new TreeItem(currentName, []);
-          previousName.push(temp);
-        };
-
-        if (index + 1 === names.length) {
-          temp.iconPath = vscode.ThemeIcon.File;
-          const vuln = new TreeItem(currentVulnerability.details);
-          vuln.command = {
-            command: 'horusec.open',
-            title: 'Vulnerability',
-            arguments: [
-              currentVulnerability,
-            ]
-          };
-          vuln.iconPath = this.getIconPathBySeverity(currentVulnerability.severity);
-          vuln.description = `${currentVulnerability.file}[${currentVulnerability.line}:${currentVulnerability.column}] `;
-          vuln.tooltip = vuln.description + vuln.label;
-
-          if (!temp.children) {
-            temp.children = [];
-          }
-          temp.children.push(vuln);
-        } else {
-          temp.iconPath = vscode.ThemeIcon.Folder;
-        }
-
-        return temp.children;
-      }, previousVulnerability);
-      return previousVulnerability;
-    }, []);
-
-    return allTreeItens;
-  }
-
-  getIconPathBySeverity(severity: string): string | vscode.Uri | { light: string | vscode.Uri; dark: string | vscode.Uri; } | vscode.ThemeIcon | undefined {
-    switch (severity) {
-      case 'HIGH':
-        return {light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-high.svg')), dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-high.svg'))};
-      case 'MEDIUM':
-        return {light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-medium.svg')), dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-medium.svg'))};
-      case 'LOW':
-        return {light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-low.svg')), dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-low.svg'))};
-      case 'AUDIT':
-        return {light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-audit.svg')), dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-audit.svg'))};
-      case 'INFO':
-        return {light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-info.svg')), dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-info.svg'))};
-      default:
-        return undefined;
-    }
-  }
-
-	openFile(vuln: Vulnerability): void {
+  public openFile(vuln: Vulnerability): void {
     if (vuln && vuln.file) {
       const openPath = vscode.Uri.file(vuln.file);
       vscode.workspace.openTextDocument(openPath)
@@ -121,5 +62,87 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
             });
         });
     }
-	}
+  }
+
+  private parseVulnerabilitiesToTreeItens(vulnerabilities: Vulnerability[]): any {
+    return vulnerabilities.reduce((previousVulnerability, currentVulnerability) => {
+      var names = currentVulnerability.file.replace(vscode.workspace.rootPath + '/', '').split('/');
+
+      names.reduce((previousName: any, currentName: any, index: number) =>
+        this.execReducePathToListTreeItem(previousName, currentName, index, currentVulnerability, names.length),
+        previousVulnerability
+      );
+      return previousVulnerability;
+    }, []);
+  }
+
+  private execReducePathToListTreeItem(previousName: any, currentName: any, index: number, currentVulnerability: Vulnerability, namesLength: number): any {
+    let temp: TreeItem = previousName.find((o: any) => o.label === currentName);
+
+    if (!temp) {
+      temp = new TreeItem(currentName, []);
+      previousName.push(temp);
+    };
+
+    if (index + 1 === namesLength) {
+      temp.iconPath = vscode.ThemeIcon.File;
+
+      if (!temp.children) {
+        temp.children = [];
+      }
+
+      temp.children.push(this.createVulnerabilityInFileToTreeItem(currentVulnerability));
+    } else {
+      temp.iconPath = vscode.ThemeIcon.Folder;
+    }
+
+    return temp.children;
+  }
+
+  private createVulnerabilityInFileToTreeItem(currentVulnerability: Vulnerability): TreeItem {
+    const vuln = new TreeItem(currentVulnerability.details);
+    vuln.command = {
+      command: 'horusec.open',
+      title: 'Vulnerability',
+      arguments: [
+        currentVulnerability,
+      ]
+    };
+    vuln.iconPath = this.getIconPathBySeverity(currentVulnerability.severity);
+    vuln.description = `${currentVulnerability.file}[${currentVulnerability.line}:${currentVulnerability.column}] `;
+    vuln.tooltip = vuln.description + vuln.label;
+    return vuln;
+  }
+
+  private getIconPathBySeverity(severity: string): string | vscode.Uri | { light: string | vscode.Uri; dark: string | vscode.Uri; } | vscode.ThemeIcon | undefined {
+    switch (severity) {
+      case 'HIGH':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-high.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-high.svg'))
+        };
+      case 'MEDIUM':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-medium.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-medium.svg'))
+        };
+      case 'LOW':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-low.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-low.svg'))
+        };
+      case 'AUDIT':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-audit.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-audit.svg'))
+        };
+      case 'INFO':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-info.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-info.svg'))
+        };
+      default:
+        return undefined;
+    }
+  }
 }
