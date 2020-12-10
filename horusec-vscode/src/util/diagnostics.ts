@@ -1,65 +1,43 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 
-import { Vulnerability } from '../entities/vulnerability';
+import { Analysis, AnalysisVulnerability } from '../entities/vulnerability';
 
-/**
- * Update diagnotics with found vulnerabilities in that file
- * @param document vscode text document
- * @param vulnDiagnostics vulnerabilities diagnotics
- * @param vulnerabilities vulnerabilities found in horusec analysis
- */
 function refreshDiagnostics(document: vscode.TextDocument,
-    vulnDiagnostics: vscode.DiagnosticCollection, vulnerabilities: Vulnerability[]): void {
+    vulnDiagnostics: vscode.DiagnosticCollection, analysisVulnerabilities: AnalysisVulnerability[]): void {
     const diagnostics: vscode.Diagnostic[] = [];
-    vulnerabilities.forEach(vulnerability => {
-        if (document && path.basename(document.uri.fsPath) === getFilename(vulnerability.file)) {
-            diagnostics.push(createDiagnostic(document, vulnerability));
+
+    analysisVulnerabilities.forEach(analysisVulnerability => {
+        if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerabilities.file)) {
+            diagnostics.push(createDiagnostic(document, analysisVulnerability));
         }
     });
 
     vulnDiagnostics.set(document.uri, diagnostics);
 }
 
-/**
- * Create warn diagnotic from vulnerability data
- * @param document vscode text document
- * @param vulnerability horusec vulnerability
- */
-function createDiagnostic(document: vscode.TextDocument, vulnerability: Vulnerability): vscode.Diagnostic {
+function createDiagnostic(document: vscode.TextDocument, analysisVulnerability: AnalysisVulnerability): vscode.Diagnostic {
     let diagnostic = new vscode.Diagnostic(
-        createDiagnosticRange(document, Number(vulnerability.line)),
-        vulnerability.referenceHash,
+        createDiagnosticRange(document, Number(analysisVulnerability.vulnerabilities.line)),
+        analysisVulnerability.vulnerabilities.vulnHash,
         vscode.DiagnosticSeverity.Warning
     );
 
-    return setDiagnosticData(document, diagnostic, vulnerability);
+    return setDiagnosticData(document, diagnostic, analysisVulnerability);
 }
 
-/**
- * Set diagnotic general diagnostic data from vulnerability data
- * @param document vscode text document
- * @param diagnostic vscode diagnostic
- * @param vulnerability horusec vulnerability
- */
 function setDiagnosticData(document: vscode.TextDocument, diagnostic: vscode.Diagnostic,
-    vulnerability: Vulnerability): vscode.Diagnostic {
-    diagnostic.relatedInformation = setDiagnosticRelatedInformation(document, vulnerability);
-    diagnostic.code = vulnerability.severity;
-    diagnostic.source = vulnerability.code;
+    analysisVulnerability: AnalysisVulnerability): vscode.Diagnostic {
+    diagnostic.relatedInformation = setDiagnosticRelatedInformation(document, analysisVulnerability);
+    diagnostic.code = analysisVulnerability.vulnerabilities.severity;
+    diagnostic.source = analysisVulnerability.vulnerabilities.code;
     return diagnostic;
 }
 
-/**
- * Create diagnotic detalied information
- * @param document vscode text document
- * @param vulnerability horusec vulnerability
- */
 function setDiagnosticRelatedInformation(document: vscode.TextDocument,
-    vulnerability: Vulnerability): vscode.DiagnosticRelatedInformation[] {
+    analysisVulnerability: AnalysisVulnerability): vscode.DiagnosticRelatedInformation[] {
     return [new vscode.DiagnosticRelatedInformation(
-        createDiagnosticLocation(document, Number(vulnerability.line)),
-        getDetails(vulnerability.details)
+        createDiagnosticLocation(document, Number(analysisVulnerability.vulnerabilities.line)),
+        getDetails(analysisVulnerability.vulnerabilities.details)
     )];
 }
 
@@ -78,11 +56,6 @@ export function createDiagnosticRange(document: vscode.TextDocument,
     );
 }
 
-/**
- * Create diagnotic of vulnerability location
- * @param document vscode text document
- * @param line vulnerability line
- */
 function createDiagnosticLocation(document: vscode.TextDocument,
     line: number): vscode.Location {
     return new vscode.Location(
@@ -91,11 +64,6 @@ function createDiagnosticLocation(document: vscode.TextDocument,
     );
 }
 
-/**
- * Create diagnotics o vulnerability position
- * @param character character position in the line
- * @param line vulnerability line
- */
 function createDiagnosticPosition(character: number,
     line: number): vscode.Position {
     return new vscode.Position(
@@ -104,42 +72,27 @@ function createDiagnosticPosition(character: number,
     );
 }
 
-/**
- * Send diagnotics changes when one of listed actions happens
- * @param vulnDiagnostics vulnerabilities diagnotics
- * @param vulnerabilities vulnerabilities found in horusec analysis
- */
 export function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection,
-    vulnerabilities: Vulnerability[]): void {
-    vulnerabilities.forEach(vulnerability => {
-        vscode.workspace.openTextDocument('./' + vulnerability.file).then(document => {
+    analysis: Analysis): void {
+    analysis.analysisVulnerabilities.forEach(analysisVulnerability => {
+        vscode.workspace.openTextDocument(getFilepath(analysisVulnerability.vulnerabilities.file)).then(document => {
             refreshDiagnostics(
                 document,
                 vulnDiagnostics,
-                vulnerabilities
+                analysis.analysisVulnerabilities
             );
         });
     });
 }
 
-/**
- * Get filename from filepath
- * @param filePath vulnerability filepath
- */
-function getFilename(filePath: string): string {
-    return filePath.replace(/^.*[\\\/]/, '');
-}
-
-/**
- * Validates if details are empty
- * If empty returns -, if no return the details
- * Empty diagnotics messages are not allowed
- * @param details vulnerability details
- */
 function getDetails(details: string): string {
     if (details === '') {
         return '-';
     }
 
     return details;
+}
+
+function getFilepath(filepath: string): string {
+    return `${vscode.workspace.rootPath}/${filepath}`;
 }
