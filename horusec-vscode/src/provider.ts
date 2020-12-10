@@ -43,6 +43,7 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
 
   public resetTree(): void {
     this.data = [];
+    this._onDidChangeTreeData.fire();
   }
 
   private parseVulnerabilitiesToTreeItens(vulnerabilities: Vulnerability[]): any{
@@ -73,4 +74,8 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
 
     return allTreeItens;
   }
+
+	openFile(e: any): any {
+		console.log(e);
+	}
 }

@@ -47,24 +47,27 @@
 					"when": "view == horusec-view",
 					"group": "navigation"
 				}
-			]
+			],
+			"view/item/context": []
 		},
 		"commands": [
 			{
 				"command": "horusec.start",
 				"title": "Horusec Start",
+				"category": "Horusec",
 				"icon": {
 					"light": "assets/light/start.svg",
 					"dark": "assets/dark/start.svg"
-				  }
+				}
 			},
 			{
 				"command": "horusec.stop",
 				"title": "Horusec Stop",
+				"category": "Horusec",
 				"icon": {
 					"light": "assets/light/stop.svg",
 					"dark": "assets/dark/stop.svg"
-				  }
+				}
 			}
 		]
 	},

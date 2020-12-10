@@ -5,10 +5,11 @@ import { subscribeToDocumentChanges } from './util/diagnostics';
 import { parseStdoutToVulnerabilities, removeCertMessages } from './util/parser';
 import { TreeNodeProvider } from './provider';
 
+let isLoading: boolean;
 let provider: TreeNodeProvider;
 let horusecView: vscode.Disposable;
+const containerName = 'horusec-cli';
 const vulnDiagnostics = vscode.languages.createDiagnosticCollection("vulnerabilities");
-
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
@@ -21,7 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(statusLoading);
 
 	context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
-		async () => runHorusec()));
+		async () => startHorusec()));
+		context.subscriptions.push(vscode.commands.registerCommand('horusec.stop',
+			async () => stopHorusec()));
+	context.subscriptions.push(vscode.commands.registerCommand('horusec.openFile',
+		async (e) => provider.openFile(e)));
 
 	context.subscriptions.push(vscode.workspace.createFileSystemWatcher('**/*.*').onDidDelete(uri => {
 		vulnDiagnostics.delete(uri);
@@ -29,16 +34,43 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 /**
- * Validates workspace and show message that analysis has started
+ * Stop and remove container horusec
  */
-function runHorusec() {
+function stopHorusec() {
 	if (vscode.workspace.rootPath === undefined) {
 		vscode.window.showErrorMessage('Horusec: No valid workspace found.');
 		return;
 	}
 
-	vscode.window.showInformationMessage(`Hold on! Horusec started to analysis your code.`);
+	execStopCommand();
+}
+
+/**
+ * Validates workspace and show message that analysis has started
+ */
+function startHorusec() {
+	if (vscode.workspace.rootPath === undefined) {
+		vscode.window.showErrorMessage('Horusec: No valid workspace found.');
+		return;
+	}
+	if (isLoading) {
+		vscode.window.showWarningMessage('Horusec: Hold on! Horusec is analyzing his code.');
+		return;
+	}
+
+	vscode.window.showInformationMessage(`Horusec: Hold on! Horusec started to analysis your code.`);
 	execStartCommand();
+}
+
+function execStopCommand() {
+	exec(getRemoveContainerCommand(), (error: any, stdout: any) => {
+		if (error) {
+			vscode.window.showErrorMessage(`Horusec stop failed: ${error.message}`);
+			console.log('error', error);
+		}
+
+		stopLoading();
+	});
 }
 
 /**
@@ -46,19 +78,23 @@ function runHorusec() {
  * Show information message that analysis has finished
  */
 function execStartCommand() {
-	statusLoading.show();
-	exec(getCommand(), (error: any, stdout: any) => {
+	startLoading();
+	provider.resetTree();
+	exec(getStartCommand(), (error: any, stdout: any) => {
 		if (error) {
-			vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
-			console.log('error', error);
+			if (!error.stack.contains('at ChildProcess.exithandler')) {
+				vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
+				console.log('error', error);
+			}
 		} else {
-			updateVulnDiagnotics(stdout);
-			openFileWithResult(removeCertMessages(stdout));
-			vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
+			exec(getRemoveContainerCommand(), () => {
+				updateVulnDiagnotics(stdout);
+				openFileWithResult(removeCertMessages(stdout));
+				vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
+			});
 		}
 
-		statusLoading.hide();
-		vscode.window.showInformationMessage(`Analysis finished with success!`);
+		stopLoading();
 	});
 }
 
@@ -103,7 +139,7 @@ function updateVulnDiagnotics(stdout: string) {
 /**
  * Command that will be execute horusec docker image of cli
  */
-function getCommand(): string {
+function getStartCommand(): string {
 	const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`;
 	const startCommandUUID = uuidv4();
 	const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
@@ -111,7 +147,21 @@ function getCommand(): string {
 	const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
 	const horusecStart = `horusec start -p ${analysisFolder} -P ${vscode.workspace.rootPath}`;
 
-	return `docker run ${dockerSock} ${bindVolume} ${cliImage} ${horusecStart}`;
+	return `docker run ${dockerSock} ${bindVolume} --name ${containerName} ${cliImage} ${horusecStart}`;
+}
+
+function getRemoveContainerCommand(): string {
+	return `docker rm ${containerName} -f`;
+}
+
+function startLoading(): void {
+	isLoading = true;
+	statusLoading.show();
+}
+
+function stopLoading(): void {
+	statusLoading.hide();
+	isLoading = false;
 }
 
 // this method is called when your extension is deactivated
