@@ -128,28 +128,28 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
         switch (type) {
             case 'HIGH':
                 return {
-                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-high.svg')),
-                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-high.svg'))
+                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'high.svg')),
+                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'high.svg'))
                 };
             case 'MEDIUM':
                 return {
-                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-medium.svg')),
-                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-medium.svg'))
+                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'medium.svg')),
+                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'medium.svg'))
                 };
             case 'LOW':
                 return {
-                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-low.svg')),
-                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-low.svg'))
+                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'low.svg')),
+                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'low.svg'))
                 };
             case 'AUDIT':
                 return {
-                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-audit.svg')),
-                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-audit.svg'))
+                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'audit.svg')),
+                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'audit.svg'))
                 };
             case 'INFO':
                 return {
-                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'severity-info.svg')),
-                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'severity-info.svg'))
+                    light: this.context.asAbsolutePath(path.join('resources', 'light', 'info.svg')),
+                    dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'info.svg'))
                 };
             case 'FOLDER':
                 return {
