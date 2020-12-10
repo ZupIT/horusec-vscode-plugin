@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import { v4 as uuidv4 } from 'uuid';
 import { subscribeToDocumentChanges } from './util/diagnostics';
 import { parseStdoutToVulnerabilities, removeCertMessages } from './util/parser';
-import { TreeNodeProvider } from './provider';
+import { TreeNodeProvider } from './providers/tree';
 
 let isLoading: boolean;
 let provider: TreeNodeProvider;
@@ -15,7 +15,7 @@ statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
 
 export function activate(context: vscode.ExtensionContext) {
-	provider = new TreeNodeProvider();
+	provider = new TreeNodeProvider(context);
 	horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
 	context.subscriptions.push(horusecView);
 	context.subscriptions.push(vulnDiagnostics);
@@ -23,10 +23,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
 		async () => startHorusec()));
-		context.subscriptions.push(vscode.commands.registerCommand('horusec.stop',
-			async () => stopHorusec()));
-	context.subscriptions.push(vscode.commands.registerCommand('horusec.openFile',
-		async (e) => provider.openFile(e)));
+	context.subscriptions.push(vscode.commands.registerCommand('horusec.stop',
+		async () => stopHorusec()));
+		context.subscriptions.push(vscode.commands.registerCommand('horusec.open',
+			async (e) => provider.openFile(e)));
 
 	context.subscriptions.push(vscode.workspace.createFileSystemWatcher('**/*.*').onDidDelete(uri => {
 		vulnDiagnostics.delete(uri);
@@ -63,7 +63,7 @@ function startHorusec() {
 }
 
 function execStopCommand() {
-	exec(getRemoveContainerCommand(), (error: any, stdout: any) => {
+	exec(getRemoveContainerCommand(), (error: any) => {
 		if (error) {
 			vscode.window.showErrorMessage(`Horusec stop failed: ${error.message}`);
 			console.log('error', error);
