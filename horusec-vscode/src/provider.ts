@@ -37,7 +37,7 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
 
   public insertVulnerabilities(vulnerabilities: Vulnerability[]): void {
     this.resetTree();
-    this.data = this.parseVulnerabilitiesToChildrenContent(vulnerabilities);
+    this.data = this.parseVulnerabilitiesToTreeItens(vulnerabilities);
     this._onDidChangeTreeData.fire();
   }
 
@@ -45,7 +45,7 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
     this.data = [];
   }
 
-  private parseVulnerabilitiesToChildrenContent(vulnerabilities: Vulnerability[]): any{
+  private parseVulnerabilitiesToTreeItens(vulnerabilities: Vulnerability[]): any{
     const allTreeItens = vulnerabilities.reduce((previousVulnerability, currentVulnerability) => {
       var names = currentVulnerability.file.replace(vscode.workspace.rootPath + '/', '').split('/');
 
