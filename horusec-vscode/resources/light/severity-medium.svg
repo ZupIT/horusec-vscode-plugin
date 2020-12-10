@@ -1,36 +1,14 @@
-<?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 40 40" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g transform="matrix(6.123233995736766e-17,-1,1,6.123233995736766e-17,0,40)">
-<g xmlns="http://www.w3.org/2000/svg">
-	<path d="M20,0C8.973,0,0,8.973,0,20c0,11.027,8.973,20,20,20c11.027,0,20-8.973,20-20C40,8.973,31.027,0,20,0z M27.756,23.465   l-6.279,5.332C21.051,29.158,20.525,29.34,20,29.34c-0.526,0-1.052-0.182-1.478-0.543l-6.279-5.332   c-0.959-0.816-1.077-2.256-0.262-3.217c0.815-0.959,2.255-1.078,3.216-0.262l2.521,2.141v-9.186c0-1.26,1.021-2.281,2.282-2.281   c1.26,0,2.281,1.021,2.281,2.281v9.186l2.521-2.141c0.962-0.814,2.401-0.697,3.218,0.262   C28.834,21.209,28.716,22.648,27.756,23.465z" fill="#ff8f00" data-original="#000000" style="" class=""/>
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-<g xmlns="http://www.w3.org/2000/svg">
-</g>
-</g></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icons / range</title>
+    <defs>
+        <path d="M17.7493752,10.4238089 C17.5780079,10.5821642 17.3637986,10.6655091 17.1410211,10.6655091 C16.9182435,10.6655091 16.7040343,10.5821642 16.5326669,10.4238089 L12.8568368,6.83997777 L12.8568368,18.1665509 C12.8568368,18.6249479 12.4712603,19 12,19 C11.5287397,19 11.1431632,18.6249479 11.1431632,18.1665509 L11.1431632,6.83997777 L7.4673331,10.4238089 C7.13316673,10.748854 6.58479115,10.748854 6.25062478,10.4238089 C5.91645841,10.0987637 5.91645841,9.5653563 6.25062478,9.24031115 L11.3916458,4.23961661 C11.4687612,4.1646062 11.5630132,4.10626476 11.6658336,4.0645923 C11.7086755,4.04792332 11.7429489,4.03125434 11.7857908,4.03125434 C11.9228847,3.98958189 12.0771153,3.98958189 12.2142092,4.03125434 C12.2570511,4.03125434 12.2913245,4.04792332 12.3341664,4.0645923 C12.4369868,4.10626476 12.5312388,4.1646062 12.6083542,4.23961661 L17.7493752,9.24031115 C18.0835416,9.5653563 18.0835416,10.0987637 17.7493752,10.4238089" id="path-1"></path>
+    </defs>
+    <g id="icons-/-range" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" fill="#FF974A" cx="12" cy="12" r="12"></circle>
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <use id="Icon-Arrow-Down" fill="#FFFFFF" transform="translate(12.000000, 11.500000) rotate(-270.000000) translate(-12.000000, -11.500000) " xlink:href="#path-1"></use>
+    </g>
+</svg>
