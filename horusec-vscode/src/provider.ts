@@ -14,9 +14,9 @@ class TreeItem extends vscode.TreeItem {
   }
 }
 
-
 export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
-  onDidChangeTreeData?: vscode.Event<TreeItem|null|undefined>|undefined;
+  _onDidChangeTreeData = new vscode.EventEmitter<TreeItem | undefined | null | void>();
+  onDidChangeTreeData: vscode.Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
   private data: TreeItem[] = [];
 
@@ -34,9 +34,11 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
     }
     return element.children;
   }
+
   public insertVulnerabilities(vulnerabilities: Vulnerability[]): void {
     this.resetTree();
     this.data = this.parseVulnerabilitiesToChildrenContent(vulnerabilities);
+    this._onDidChangeTreeData.fire();
   }
 
   public resetTree(): void {
@@ -44,22 +46,31 @@ export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   private parseVulnerabilitiesToChildrenContent(vulnerabilities: Vulnerability[]): any{
-    const allTreeItens = vulnerabilities.reduce((r, p) => {
-      p.file = p.file.replace(vscode.workspace.rootPath + '/', '');
-      var names = p.file.split('/');
-      names.reduce((q: any, name: any, index) => {
-        let temp = q.find((o: any) => o.label === name);
+    const allTreeItens = vulnerabilities.reduce((previousVulnerability, currentVulnerability) => {
+      var names = currentVulnerability.file.replace(vscode.workspace.rootPath + '/', '').split('/');
+
+      names.reduce((previousName: any, currentName: any, index) => {
+        let temp: TreeItem = previousName.find((o: any) => o.label === currentName);
 
         if (!temp) {
-          temp = new TreeItem(name, []);
-          q.push(temp);
+          temp = new TreeItem(currentName, []);
+          previousName.push(temp);
         };
 
+        if (index + 1 === names.length) {
+          const vuln = new TreeItem(currentVulnerability.details);
+
+          if (!temp.children) {
+            temp.children = [];
+          }
+          temp.children.push(vuln);
+        }
+
         return temp.children;
-      }, r);
-      return r;
+      }, previousVulnerability);
+      return previousVulnerability;
     }, []);
 
-    return [new TreeItem('Vulnerabilities', allTreeItens)];
+    return allTreeItens;
   }
 }

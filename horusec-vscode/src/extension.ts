@@ -56,7 +56,6 @@ function execStartCommand() {
 			openFileWithResult(removeCertMessages(stdout));
 			vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
 		}
-		horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
 
 		statusLoading.hide();
 		vscode.window.showInformationMessage(`Analysis finished with success!`);

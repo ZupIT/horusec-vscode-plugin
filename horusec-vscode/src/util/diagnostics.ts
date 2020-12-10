@@ -112,7 +112,7 @@ function createDiagnosticPosition(character: number,
 export function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection,
     vulnerabilities: Vulnerability[]): void {
     vulnerabilities.forEach(vulnerability => {
-        vscode.workspace.openTextDocument(vulnerability.file).then(document => {
+        vscode.workspace.openTextDocument('./' + vulnerability.file).then(document => {
             refreshDiagnostics(
                 document,
                 vulnDiagnostics,
