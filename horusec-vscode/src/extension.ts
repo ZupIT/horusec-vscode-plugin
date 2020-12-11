@@ -3,10 +3,11 @@ import { exec } from 'child_process';
 import { v4 as uuidv4 } from 'uuid';
 import { subscribeToDocumentChanges } from './util/diagnostics';
 import { TreeNodeProvider } from './providers/tree';
+import { HelpNodeProvider } from './providers/help';
 import { parseOutputToAnalysis, parseAnalysisToVulnerabilities } from './util/parser';
 
 let isLoading: boolean;
-let provider: TreeNodeProvider;
+let vulnsProvider: TreeNodeProvider;
 let horusecView: vscode.Disposable;
 const containerName = 'horusec-cli';
 const vulnDiagnostics = vscode.languages.createDiagnosticCollection("vulnerabilities");
@@ -15,8 +16,10 @@ statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
 
 export function activate(context: vscode.ExtensionContext) {
-    provider = new TreeNodeProvider(context);
-    horusecView = vscode.window.registerTreeDataProvider('horusec-view', provider);
+    vscode.window.registerTreeDataProvider('vulnerabilitiesView', new HelpNodeProvider(context));
+
+    vulnsProvider = new TreeNodeProvider(context);
+    horusecView = vscode.window.registerTreeDataProvider('vulnerabilitiesView', vulnsProvider);
     context.subscriptions.push(horusecView);
     context.subscriptions.push(vulnDiagnostics);
     context.subscriptions.push(statusLoading);
@@ -26,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('horusec.stop',
         async () => stopHorusec()));
     context.subscriptions.push(vscode.commands.registerCommand('horusec.open',
-        async (e) => provider.openFile(e)));
+        async (e) => vulnsProvider.openFile(e)));
     context.subscriptions.push(vscode.workspace.createFileSystemWatcher('**/*.*').onDidDelete(uri => {
         vulnDiagnostics.delete(uri);
     }));
@@ -68,7 +71,7 @@ function execStopCommand() {
 
 function execStartCommand() {
     startLoading();
-    provider.resetTree();
+    vulnsProvider.resetTree();
     exec(getStartCommand(), (error: any, stdout: any) => {
         if (error) {
             if (!error.stack.contains('at ChildProcess.exithandler')) {
@@ -91,7 +94,7 @@ function updateVulnDiagnotics() {
         vulnDiagnostics.clear();
         const analysis = parseOutputToAnalysis();
 
-        provider.insertVulnerabilities(parseAnalysisToVulnerabilities(analysis));
+        vulnsProvider.insertVulnerabilities(parseAnalysisToVulnerabilities(analysis));
 
         subscribeToDocumentChanges(
             vulnDiagnostics,

@@ -29,8 +29,13 @@
         "views": {
             "horusec-container": [
                 {
-                    "id": "horusec-view",
-                    "name": "Horusec",
+                    "id": "vulnerabilitiesView",
+                    "name": "Vulnerabilities",
+                    "contextualTitle": "resources/horus_icon_white.svg"
+                },
+                {
+                    "id": "helpView",
+                    "name": "Help and Feedback",
                     "contextualTitle": "resources/horus_icon_white.svg"
                 }
             ]
@@ -39,19 +44,19 @@
             "view/title": [
                 {
                     "command": "horusec.start",
-                    "when": "view == horusec-view",
+                    "when": "view == vulnerabilitiesView",
                     "group": "navigation"
                 },
                 {
                     "command": "horusec.stop",
-                    "when": "view == horusec-view",
+                    "when": "view == vulnerabilitiesView",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
                     "command": "horusec.open",
-                    "when": "view == horusec-view",
+                    "when": "view == vulnerabilitiesView",
                     "group": "inline"
                 }
             ]
