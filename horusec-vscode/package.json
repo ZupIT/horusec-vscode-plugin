@@ -118,6 +118,7 @@
     "dependencies": {
         "child_process": "^1.0.2",
         "fs": "0.0.1-security",
+        "os": "^0.1.1",
         "uuid": "^8.3.1"
     }
 }
