@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
 import { Analysis, Vulnerability } from '../entities/vulnerability';
 
-const horusecResultPath = `${vscode.workspace.rootPath}/horusec-result.json`;
+const horusecResultPath = path.join(vscode.workspace.rootPath || '', 'horusec-result.json');
 
-export function parseOutputToAnalysis(): Analysis {
+export function parseOutputToAnalysis(stdout: any): Analysis {
     try {
         let data = fs.readFileSync(horusecResultPath);
         fs.unlinkSync(horusecResultPath);

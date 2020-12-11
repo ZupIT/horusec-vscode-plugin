@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
-import { v4 as uuidv4 } from 'uuid';
+import { platform } from 'os';
 import { subscribeToDocumentChanges } from './util/diagnostics';
 import { TreeProvider } from './providers/tree';
 import { HelpProvider } from './providers/help';
@@ -64,7 +64,7 @@ function startHorusec() {
 
 function execStopCommand() {
     exec(getRemoveContainerCommand(), (error: any) => {
-        if (error && !error.stack.contains('No such container: horusec-cli')) {
+        if (error && !error.stack.includes('No such container: horusec-cli')) {
             vscode.window.showErrorMessage(`Horusec stop failed: ${error.message}`);
             console.log('error', error);
         }
@@ -76,15 +76,14 @@ function execStopCommand() {
 function execStartCommand() {
     startLoading();
     vulnsProvider.resetTree();
-    exec(getStartCommand(), (error: any, stdout: any) => {
+    const startCommand = getStartCommand();
+    exec(startCommand, (error: any, stdout: any) => {
         if (error) {
-            if (!error.stack.contains('at ChildProcess.exithandler')) {
-                vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
-                console.log('error', error);
-            }
+            vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
+            console.log('error', error);
         } else {
             exec(getRemoveContainerCommand(), () => {
-                updateVulnDiagnotics();
+                updateVulnDiagnotics(stdout);
                 vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
             });
         }
@@ -93,10 +92,10 @@ function execStartCommand() {
     });
 }
 
-function updateVulnDiagnotics() {
+function updateVulnDiagnotics(stdout: any) {
     try {
         vulnDiagnostics.clear();
-        const analysis = parseOutputToAnalysis();
+        const analysis = parseOutputToAnalysis(stdout);
 
         vulnsProvider.insertVulnerabilities(parseAnalysisToVulnerabilities(analysis));
 
@@ -109,16 +108,47 @@ function updateVulnDiagnotics() {
     }
 }
 
+/*
+docker run -v //var/run/docker.sock:/var/run/docker.sock \
+-v //c//Users//wilia//Documents//Horus//horus-example-vulnerabilities:/src/horusec-vscode \
+horuszup/horusec-cli:v1.6.0-alpha-1 \
+horusec start -p /src/horusec-vscode -P //c//Users//wilia//Documents//Horus//horus-example-vulnerabilities \
+--log-level debug -o json -O /src/horusec-vscode/output.json
+*/
 function getStartCommand(): string {
-    const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`;
-    const startCommandUUID = uuidv4();
-    const analysisFolder = `/src/horusec-vscode-${startCommandUUID}`;
-    const bindVolume = `-v ${vscode.workspace.rootPath}:${analysisFolder}`;
+    const platformContent = platform();
+    switch (platformContent) {
+        case 'win32':
+            return getStartCommandWindows();
+        default:
+            return getStartCommandDefault();
+    }
+}
+
+function getStartCommandWindows() {
+    const rootPath = getSourceFolderFromWindows(vscode.workspace.rootPath);
+    const dockerSock = `-v //var/run/docker.sock:/var/run/docker.sock`;
+    const analysisFolder = `/src/horusec-vscode`;
+    const bindVolume = `-v ${rootPath}:${analysisFolder}`;
     const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
-    const horusecJsonOutput = `-o json -O ${analysisFolder}/horusec-result.json`;
-    const horusecStart = `horusec start -p ${analysisFolder} -P ${vscode.workspace.rootPath} ${horusecJsonOutput}`;
+    const outputJsonPath = `${analysisFolder}/horusec-result.json`;
+    const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
+    const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
 
     return `docker run ${dockerSock} ${bindVolume} --name ${containerName} ${cliImage} ${horusecStart}`;
+}
+
+function getStartCommandDefault() {
+    const rootPath = vscode.workspace.rootPath;
+    const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`;
+    const analysisFolder = `/src/horusec-vscode`;
+    const bindVolume = `-v ${rootPath}:${analysisFolder}`;
+    const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
+    const outputJsonPath = `${analysisFolder}/horusec-result.json`;
+    const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
+    const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
+
+    return `docker run ${dockerSock} ${bindVolume} --name ${containerName} ${cliImage} ${horusecStart} && echo 'xablau'`;
 }
 
 function getRemoveContainerCommand(): string {
@@ -135,4 +165,13 @@ function stopLoading(): void {
     isLoading = false;
 }
 
+function getSourceFolderFromWindows(path=''): string {
+	let partitionLower = path.toLowerCase().substring(0, 1);
+	let pathSplit = path.split(":");
+	pathSplit[0] = partitionLower;
+	path = pathSplit.join("");
+	path = "//" + path;
+    path = path.split("\\").join("//");
+	return path;
+}
 export function deactivate() { }

@@ -61,9 +61,3 @@ class ItemLink extends vscode.TreeItem {
         };
     }
 }
-
-// Horusec extension doc
-// Horusec doc
-// Horusec Tutorials
-// Review Issues
-// Report Issues
