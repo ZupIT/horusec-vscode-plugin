@@ -72,7 +72,7 @@ function execStopCommand() {
 function execStartCommand() {
     startLoading();
     vulnsProvider.resetTree();
-    const startCommand = getStartCommand()
+    const startCommand = getStartCommand();
     exec(startCommand, (error: any, stdout: any) => {
         if (error) {
             vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
@@ -112,12 +112,12 @@ horusec start -p /src/horusec-vscode -P //c//Users//wilia//Documents//Horus//hor
 --log-level debug -o json -O /src/horusec-vscode/output.json
 */
 function getStartCommand(): string {
-    const platformContent = platform()
+    const platformContent = platform();
     switch (platformContent) {
         case 'win32':
-            return getStartCommandWindows()
+            return getStartCommandWindows();
         default:
-            return getStartCommandDefault()
+            return getStartCommandDefault();
     }
 }
 
@@ -127,7 +127,7 @@ function getStartCommandWindows() {
     const analysisFolder = `/src/horusec-vscode`;
     const bindVolume = `-v ${rootPath}:${analysisFolder}`;
     const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
-    const outputJsonPath = `${analysisFolder}/horusec-result.json`
+    const outputJsonPath = `${analysisFolder}/horusec-result.json`;
     const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
     const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
 
@@ -140,7 +140,7 @@ function getStartCommandDefault() {
     const analysisFolder = `/src/horusec-vscode`;
     const bindVolume = `-v ${rootPath}:${analysisFolder}`;
     const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
-    const outputJsonPath = `${analysisFolder}/horusec-result.json`
+    const outputJsonPath = `${analysisFolder}/horusec-result.json`;
     const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
     const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
 
@@ -162,15 +162,12 @@ function stopLoading(): void {
 }
 
 function getSourceFolderFromWindows(path=''): string {
-	// C:/Users/usr/Documents/Horusec/charlescd/.horusec/ID
-	let partitionLower = path.toLowerCase().substring(0, 1)
-	let pathSplit = path.split(":")
-	pathSplit[0] = partitionLower
-	path = pathSplit.join("")
-	// c/Users/usr/Documents/Horusec/project/.horusec/ID
-	path = "//" + path
-	// /c/Users/usr/Documents/Horusec/project/.horusec/ID
+	let partitionLower = path.toLowerCase().substring(0, 1);
+	let pathSplit = path.split(":");
+	pathSplit[0] = partitionLower;
+	path = pathSplit.join("");
+	path = "//" + path;
     path = path.split("\\").join("//");
-	return path
+	return path;
 }
 export function deactivate() { }
