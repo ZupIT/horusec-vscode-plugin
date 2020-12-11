@@ -2,12 +2,13 @@ import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import { v4 as uuidv4 } from 'uuid';
 import { subscribeToDocumentChanges } from './util/diagnostics';
-import { TreeNodeProvider } from './providers/tree';
-import { HelpNodeProvider } from './providers/help';
+import { TreeProvider } from './providers/tree';
+import { HelpProvider } from './providers/help';
 import { parseOutputToAnalysis, parseAnalysisToVulnerabilities } from './util/parser';
 
 let isLoading: boolean;
-let vulnsProvider: TreeNodeProvider;
+let vulnsProvider: TreeProvider;
+let helpProvider: HelpProvider;
 let horusecView: vscode.Disposable;
 const containerName = 'horusec-cli';
 const vulnDiagnostics = vscode.languages.createDiagnosticCollection("vulnerabilities");
@@ -16,9 +17,7 @@ statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
 
 export function activate(context: vscode.ExtensionContext) {
-    vscode.window.registerTreeDataProvider('vulnerabilitiesView', new HelpNodeProvider(context));
-
-    vulnsProvider = new TreeNodeProvider(context);
+    vulnsProvider = new TreeProvider(context);
     horusecView = vscode.window.registerTreeDataProvider('vulnerabilitiesView', vulnsProvider);
     context.subscriptions.push(horusecView);
     context.subscriptions.push(vulnDiagnostics);
@@ -33,6 +32,11 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.workspace.createFileSystemWatcher('**/*.*').onDidDelete(uri => {
         vulnDiagnostics.delete(uri);
     }));
+
+
+    helpProvider = new HelpProvider(context);
+    vscode.window.registerTreeDataProvider('helpView', helpProvider);
+    context.subscriptions.push(vscode.commands.registerCommand('horusec.openLink', async (e) => helpProvider.openLink(e)));
 }
 
 function stopHorusec() {
@@ -50,11 +54,11 @@ function startHorusec() {
         return;
     }
     if (isLoading) {
-        vscode.window.showWarningMessage('Horusec: Hold on! Horusec is analyzing his code.');
+        vscode.window.showWarningMessage('Hold on! Horusec is analyzing his code.');
         return;
     }
 
-    vscode.window.showInformationMessage(`Horusec: Hold on! Horusec started to analysis your code.`);
+    vscode.window.showInformationMessage(`Hold on! Horusec started to analysis your code.`);
     execStartCommand();
 }
 

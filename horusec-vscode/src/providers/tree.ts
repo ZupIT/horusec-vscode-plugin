@@ -15,7 +15,7 @@ class TreeItem extends vscode.TreeItem {
     }
 }
 
-export class TreeNodeProvider implements vscode.TreeDataProvider<TreeItem> {
+export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
     _onDidChangeTreeData = new vscode.EventEmitter<TreeItem | undefined | null | void>();
     onDidChangeTreeData: vscode.Event<TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 

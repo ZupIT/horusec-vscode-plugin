@@ -1,36 +1,69 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 
-class HelpItem extends vscode.TreeItem {
-    children: HelpItem[] | undefined;
+export class HelpProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    _onDidChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
+    onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-    constructor(label: string, children?: HelpItem[]) {
-        super(
-            label,
-            children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded
-        );
-        this.children = children;
-    }
-}
-
-export class HelpNodeProvider implements vscode.TreeDataProvider<HelpItem> {
-    _onDidChangeTreeData = new vscode.EventEmitter<HelpItem | undefined | null | void>();
-    onDidChangeTreeData: vscode.Event<HelpItem | undefined | null | void> = this._onDidChangeTreeData.event;
-
-    private data: HelpItem[] = [];
+    private data: vscode.TreeItem[] = [];
     private context: vscode.ExtensionContext;
 
     constructor(_context: vscode.ExtensionContext) {
         this.context = _context;
+        this.renderLinksList();
     }
 
-    public getTreeItem(element: HelpItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    public getTreeItem(element: vscode.TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element;
     }
 
-    public getChildren(element?: HelpItem | undefined): vscode.ProviderResult<HelpItem[]> {
+    public getChildren(element: vscode.TreeItem): Thenable<vscode.TreeItem[]> {
         if (element === undefined) {
-            return this.data;
+            return Promise.resolve(this.data);
         }
-        return element.children;
+        return Promise.resolve([element]);
+    }
+
+    public renderLinksList() {
+        this.data = [
+            new ItemLink('Discover the Horusec', 'https://horusec.io/', 'rocket.svg', this.context),
+            new ItemLink('Extension documentation', 'https://docs.horusec.io/', 'book.svg', this.context),
+            new ItemLink('Horusec documentation', 'https://docs.horusec.io/', 'book.svg', this.context),
+            new ItemLink('Source Code', 'https://github.com/ZupIT/horusec-extensions', 'github.svg', this.context),
+            new ItemLink('Review Issues', 'https://github.com/ZupIT/horusec-extensions/issues', 'message.svg', this.context),
+            new ItemLink('Report Issue', 'https://github.com/ZupIT/horusec-extensions/issues/new/choose', 'alert.svg', this.context)
+        ],
+
+        this._onDidChangeTreeData.fire();
+    }
+
+    public openLink(link: string) {
+        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(link));
     }
 }
+
+
+class ItemLink extends vscode.TreeItem {
+    constructor(label: string, link: string, icon: string, context: vscode.ExtensionContext) {
+        super(
+            label,
+        );
+
+        this.command = {
+            command: 'horusec.openLink',
+            title: 'Open link',
+            arguments: [link]
+        };
+
+        this.iconPath = {
+            dark: context.asAbsolutePath(path.join('resources', 'dark', icon)),
+            light: context.asAbsolutePath(path.join('resources', 'light', icon))
+        };
+    }
+}
+
+// Horusec extension doc
+// Horusec doc
+// Horusec Tutorials
+// Review Issues
+// Report Issues

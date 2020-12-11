@@ -57,7 +57,12 @@
                 {
                     "command": "horusec.open",
                     "when": "view == vulnerabilitiesView",
-                    "group": "inline"
+                    "group": "main"
+                },
+                {
+                    "command": "horusec.openLink",
+                    "when": "view == helpView",
+                    "group": "main"
                 }
             ]
         },
@@ -83,6 +88,11 @@
             {
                 "command": "horusec.open",
                 "title": "Vulnerability",
+                "category": "Horusec"
+            },
+            {
+                "command": "horusec.openLink",
+                "title": "Open Link",
                 "category": "Horusec"
             }
         ]
