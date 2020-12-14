@@ -151,7 +151,7 @@ function getStartCommandDefault() {
     const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
     const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
 
-    return `docker run ${dockerSock} ${bindVolume} --name ${containerName} ${cliImage} ${horusecStart} && echo 'xablau'`;
+    return `docker run ${dockerSock} ${bindVolume} --name ${containerName} ${cliImage} ${horusecStart}`;
 }
 
 function getRemoveContainerCommand(): string {
