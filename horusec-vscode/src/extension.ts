@@ -11,7 +11,7 @@ let vulnsProvider: TreeProvider;
 let helpProvider: HelpProvider;
 let horusecView: vscode.Disposable;
 const containerName = 'horusec-cli';
-const vulnDiagnostics = vscode.languages.createDiagnosticCollection("vulnerabilities");
+const vulnDiagnostics = vscode.languages.createDiagnosticCollection('vulnerabilities');
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
@@ -40,8 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function stopHorusec() {
-    if (vscode.workspace.rootPath === undefined) {
-        vscode.window.showErrorMessage('Horusec: No valid workspace found.');
+    if (!isLoading) {
         return;
     }
 
@@ -76,26 +75,31 @@ function execStopCommand() {
 function execStartCommand() {
     startLoading();
     vulnsProvider.resetTree();
-    const startCommand = getStartCommand();
-    exec(startCommand, (error: any, stdout: any) => {
-        if (error) {
-            vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
-            console.log('error', error);
-        } else {
-            exec(getRemoveContainerCommand(), () => {
-                updateVulnDiagnotics(stdout);
-                vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
-            });
-        }
+    exec(getStartCommand(), (error: any) => {
+        setTimeout(() => {
+            if (error) {
+                if (!isLoading && error.stack.includes('ChildProcess.exithandler')) {
+                    vscode.window.showWarningMessage('Horusec was forced to stop');
+                } else {
+                    vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
+                    console.log('error', error);
+                }
+            } else {
+                exec(getRemoveContainerCommand(), () => {
+                    updateVulnDiagnotics();
+                    vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
+                });
+            }
 
-        stopLoading();
+            stopLoading();
+        }, 300);
     });
 }
 
-function updateVulnDiagnotics(stdout: any) {
+function updateVulnDiagnotics() {
     try {
         vulnDiagnostics.clear();
-        const analysis = parseOutputToAnalysis(stdout);
+        const analysis = parseOutputToAnalysis();
 
         vulnsProvider.insertVulnerabilities(parseAnalysisToVulnerabilities(analysis));
 
@@ -167,11 +171,11 @@ function stopLoading(): void {
 
 function getSourceFolderFromWindows(path=''): string {
 	let partitionLower = path.toLowerCase().substring(0, 1);
-	let pathSplit = path.split(":");
+	let pathSplit = path.split(':');
 	pathSplit[0] = partitionLower;
-	path = pathSplit.join("");
-	path = "//" + path;
-    path = path.split("\\").join("//");
+	path = pathSplit.join('');
+	path = '//' + path;
+    path = path.split('\\').join('//');
 	return path;
 }
 export function deactivate() { }

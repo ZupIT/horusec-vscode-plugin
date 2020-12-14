@@ -28,7 +28,7 @@ export class HelpProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
         this.data = [
             new ItemLink('Discover the Horusec', 'https://horusec.io/', 'rocket.svg', this.context),
             new ItemLink('Extension documentation', 'https://docs.horusec.io/v/v1-eng/references/extensions/visual-studio-code', 'book.svg', this.context),
-            new ItemLink('Horusec documentation', 'https://docs.horusec.io/', 'book.svg', this.context),
+            new ItemLink('Horusec documentation', 'https://docs.horusec.io/v/v1-eng', 'book.svg', this.context),
             new ItemLink('Source Code', 'https://github.com/ZupIT/horusec-extensions', 'github.svg', this.context),
             new ItemLink('Review Issues', 'https://github.com/ZupIT/horusec-extensions/issues', 'message.svg', this.context),
             new ItemLink('Report Issue', 'https://github.com/ZupIT/horusec-extensions/issues/new/choose', 'alert.svg', this.context)
