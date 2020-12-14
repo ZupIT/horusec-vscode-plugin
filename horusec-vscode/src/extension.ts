@@ -147,7 +147,7 @@ function getStartCommandDefault() {
     const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`;
     const analysisFolder = `/src/horusec-vscode`;
     const bindVolume = `-v ${rootPath}:${analysisFolder}`;
-    const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
+    const cliImage = `horuszup/horusec-cli:v1.6.1`;
     const outputJsonPath = `${analysisFolder}/horusec-result.json`;
     const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
     const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
