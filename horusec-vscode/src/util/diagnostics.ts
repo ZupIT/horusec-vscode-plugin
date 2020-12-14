@@ -41,7 +41,12 @@ function setDiagnosticRelatedInformation(document: vscode.TextDocument,
     )];
 }
 
-function createDiagnosticRange(document: vscode.TextDocument,
+/**
+ * Create diagnotic of vulnerability range
+ * @param document vscode text document
+ * @param line vulnerability line
+ */
+export function createDiagnosticRange(document: vscode.TextDocument,
     line: number): vscode.Range {
     var lineRange = document.lineAt(line - 1).range;
 
