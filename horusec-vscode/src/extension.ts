@@ -10,6 +10,7 @@ let isLoading: boolean;
 let vulnsProvider: TreeProvider;
 let helpProvider: HelpProvider;
 let horusecView: vscode.Disposable;
+const cliImage = 'horuszup/horusec-cli:v1.6.1';
 const containerName = 'horusec-cli';
 const vulnDiagnostics = vscode.languages.createDiagnosticCollection('vulnerabilities');
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
@@ -134,7 +135,6 @@ function getStartCommandWindows() {
     const dockerSock = `-v //var/run/docker.sock:/var/run/docker.sock`;
     const analysisFolder = `/src/horusec-vscode`;
     const bindVolume = `-v ${rootPath}:${analysisFolder}`;
-    const cliImage = `horuszup/horusec-cli:v1.6.0-alpha-1`;
     const outputJsonPath = `${analysisFolder}/horusec-result.json`;
     const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
     const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
@@ -147,7 +147,6 @@ function getStartCommandDefault() {
     const dockerSock = `-v /var/run/docker.sock:/var/run/docker.sock`;
     const analysisFolder = `/src/horusec-vscode`;
     const bindVolume = `-v ${rootPath}:${analysisFolder}`;
-    const cliImage = `horuszup/horusec-cli:v1.6.1`;
     const outputJsonPath = `${analysisFolder}/horusec-result.json`;
     const horusecJsonOutput = `-o json -O ${outputJsonPath}`;
     const horusecStart = `horusec start -p ${analysisFolder} -P ${rootPath} ${horusecJsonOutput}`;
@@ -169,13 +168,13 @@ function stopLoading(): void {
     isLoading = false;
 }
 
-function getSourceFolderFromWindows(path=''): string {
-	let partitionLower = path.toLowerCase().substring(0, 1);
-	let pathSplit = path.split(':');
-	pathSplit[0] = partitionLower;
-	path = pathSplit.join('');
-	path = '//' + path;
+function getSourceFolderFromWindows(path = ''): string {
+    let partitionLower = path.toLowerCase().substring(0, 1);
+    let pathSplit = path.split(':');
+    pathSplit[0] = partitionLower;
+    path = pathSplit.join('');
+    path = '//' + path;
     path = path.split('\\').join('//');
-	return path;
+    return path;
 }
 export function deactivate() { }
