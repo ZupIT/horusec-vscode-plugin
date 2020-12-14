@@ -1,59 +1,133 @@
 {
-	"name": "horusec",
-	"displayName": "horusec",
-	"description": "Horusec is an open source tool that improves identification of vulnerabilities in your project with just one command.",
-	"version": "1.5.0",
-	"publisher": "ZupInnovation",
-	"repository": "https://github.com/ZupIT/horusec-extensions",
-	"icon": "assets/horus_icon.png",
-	"engines": {
-		"vscode": "^1.51.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./dist/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "horusec.start",
-				"title": "Horusec Start"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run package",
-		"compile": "webpack --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
-		"watch": "webpack --watch --devtool nosources-source-map --info-verbosity verbose --config ./build/node-extension.webpack.config.js",
-		"package": "webpack --mode production --config ./build/node-extension.webpack.config.js",
-		"test-compile": "tsc -p ./",
-		"test-watch": "tsc -watch -p ./",
-		"pretest": "npm run test-compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.0",
-		"@types/node": "^12.11.7",
-		"@types/uuid": "^8.3.0",
-		"@types/vscode": "^1.51.0",
-		"@typescript-eslint/eslint-plugin": "^4.1.1",
-		"@typescript-eslint/parser": "^4.1.1",
-		"eslint": "^7.9.0",
-		"glob": "^7.1.6",
-		"mocha": "^8.1.3",
-		"ts-loader": "^8.0.3",
-		"typescript": "^4.0.2",
-		"vscode-test": "^1.4.0",
-		"webpack": "^4.44.1",
-		"webpack-cli": "^3.3.12"
-	},
-	"dependencies": {
-		"child_process": "^1.0.2",
-		"uuid": "^8.3.1"
-	}
+    "name": "horusec",
+    "displayName": "Horusec",
+    "description": "Horusec is an open source tool that improves identification of vulnerabilities in your project with just one command.",
+    "version": "1.5.0",
+    "publisher": "ZupInnovation",
+    "repository": "https://github.com/ZupIT/horusec-extensions/tree/master/horusec-vscode",
+    "icon": "https://github.com/ZupIT/horusec-extensions/blob/master/horusec-vscode/resources/horus_icon.png?raw=true",
+    "engines": {
+        "vscode": "^1.51.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "horusec-container",
+                    "title": "Horusec",
+                    "icon": "resources/horus_icon_white.svg"
+                }
+            ]
+        },
+        "views": {
+            "horusec-container": [
+                {
+                    "id": "vulnerabilitiesView",
+                    "name": "Vulnerabilities",
+                    "contextualTitle": "resources/horus_icon_white.svg"
+                },
+                {
+                    "id": "helpView",
+                    "name": "Help and Feedback",
+                    "contextualTitle": "resources/horus_icon_white.svg"
+                }
+            ]
+        },
+        "menus": {
+            "view/title": [
+                {
+                    "command": "horusec.start",
+                    "when": "view == vulnerabilitiesView",
+                    "group": "navigation"
+                },
+                {
+                    "command": "horusec.stop",
+                    "when": "view == vulnerabilitiesView",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "horusec.open",
+                    "when": "view == vulnerabilitiesView",
+                    "group": "main"
+                },
+                {
+                    "command": "horusec.openLink",
+                    "when": "view == helpView",
+                    "group": "main"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "horusec.start",
+                "title": "Horusec Start",
+                "category": "Horusec",
+                "icon": {
+                    "light": "resources/light/start.svg",
+                    "dark": "resources/dark/start.svg"
+                }
+            },
+            {
+                "command": "horusec.stop",
+                "title": "Horusec Stop",
+                "category": "Horusec",
+                "icon": {
+                    "light": "resources/light/stop.svg",
+                    "dark": "resources/dark/stop.svg"
+                }
+            },
+            {
+                "command": "horusec.open",
+                "title": "Vulnerability",
+                "category": "Horusec"
+            },
+            {
+                "command": "horusec.openLink",
+                "title": "Open Link",
+                "category": "Horusec"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "webpack --devtool nosources-source-map --config ./build/node-extension.webpack.config.js",
+        "watch": "webpack --watch --devtool nosources-source-map --info-verbosity verbose --config ./build/node-extension.webpack.config.js",
+        "package": "webpack --mode production --config ./build/node-extension.webpack.config.js",
+        "test-compile": "tsc -p ./",
+        "test-watch": "tsc -watch -p ./",
+        "pretest": "npm run test-compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.1.3",
+        "@types/mocha": "^8.0.0",
+        "@types/node": "^12.11.7",
+        "@types/uuid": "^8.3.0",
+        "@types/vscode": "^1.51.0",
+        "@typescript-eslint/eslint-plugin": "^4.1.1",
+        "@typescript-eslint/parser": "^4.1.1",
+        "eslint": "^7.9.0",
+        "glob": "^7.1.6",
+        "mocha": "^8.1.3",
+        "ts-loader": "^8.0.3",
+        "typescript": "^4.0.2",
+        "vscode-test": "^1.4.0",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12"
+    },
+    "dependencies": {
+        "child_process": "^1.0.2",
+        "fs": "0.0.1-security",
+        "uuid": "^8.3.1"
+    }
 }
