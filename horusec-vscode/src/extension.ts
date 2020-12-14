@@ -10,7 +10,7 @@ let isLoading: boolean;
 let vulnsProvider: TreeProvider;
 let helpProvider: HelpProvider;
 let horusecView: vscode.Disposable;
-const cliImage = 'horuszup/horusec-cli:v1.6.1'
+const cliImage = 'horuszup/horusec-cli:v1.6.1';
 const containerName = 'horusec-cli';
 const vulnDiagnostics = vscode.languages.createDiagnosticCollection('vulnerabilities');
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
