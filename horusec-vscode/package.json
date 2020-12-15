@@ -17,6 +17,12 @@
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "viewsWelcome": [
+            {
+                "view": "vulnerabilitiesView",
+                "contents": "When your code is analyzed, the vulnerabilities found by Horusec will be listed here. \n[Start analysis](command:horusec.start)"
+            }
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
