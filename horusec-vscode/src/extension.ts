@@ -66,7 +66,6 @@ function execStopCommand() {
     exec(getRemoveContainerCommand(), (error: any) => {
         if (error && !error.stack.includes('No such container: horusec-cli')) {
             vscode.window.showErrorMessage(`Horusec stop failed: ${error.message}`);
-            console.log('error', error);
         }
 
         stopLoading();
@@ -83,7 +82,6 @@ function execStartCommand() {
                     vscode.window.showWarningMessage('Horusec was forced to stop');
                 } else {
                     vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
-                    console.log('error', error);
                 }
             } else {
                 exec(getRemoveContainerCommand(), () => {
@@ -109,7 +107,7 @@ function updateVulnDiagnotics() {
             analysis
         );
     } catch (error) {
-        console.log(error);
+        vscode.window.showErrorMessage(`Horusec error: ${error.message}`);
     }
 }
 
