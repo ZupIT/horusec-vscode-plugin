@@ -11,7 +11,6 @@ export function parseOutputToAnalysis(): Analysis {
         fs.unlinkSync(horusecResultPath);
         return JSON.parse(data.toString());
     } catch (error) {
-        console.log(error);
         return {} as Analysis;
     }
 }
