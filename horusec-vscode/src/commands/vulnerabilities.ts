@@ -42,7 +42,7 @@ function writeHashInFile(vulnHash: string, type: 'riskAccept' | 'falsePositive')
         fileContent.horusecCliRiskAcceptHashes.push(vulnHash);
       }
 
-      fs.writeFileSync(filePathToOpen, JSON.stringify(fileContent));
+      fs.writeFileSync(filePathToOpen, JSON.stringify(fileContent, null, 2));
       vscode.workspace.applyEdit(wsedit);
     });
   } else {
@@ -54,7 +54,7 @@ function writeHashInFile(vulnHash: string, type: 'riskAccept' | 'falsePositive')
       fileContent.horusecCliRiskAcceptHashes.push(vulnHash);
     }
 
-    fs.writeFileSync(filePathToOpen, JSON.stringify(fileContent));
+    fs.writeFileSync(filePathToOpen, JSON.stringify(fileContent, null, 2));
     vscode.workspace.applyEdit(wsedit);
   }
 
