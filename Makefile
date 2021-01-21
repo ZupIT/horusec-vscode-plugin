@@ -3,9 +3,9 @@ lint: lint-horusec-vscode
 
 
 lint-horusec-vscode:
-	cd ./horusec-vscode && npm run lint && cd ..
+	npm run lint
 
 # ========================================================================================= #
 
 install-horusec-vscode:
-	cd ./horusec-vscode && npm install && cd ..
+	npm install
