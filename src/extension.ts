@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { statusLoading } from './util/loading';
 import { HelpProvider, TreeProvider } from './providers';
-import { setAsFalsePositive, setAsRiskAccept, startHorusec, stopHorusec } from './commands';
+import { setAsFalsePositive, setAsRiskAccept, startHorusec, stopHorusec, configHorusec } from './commands';
 
 let vulnsProvider: TreeProvider;
 let helpProvider: HelpProvider;
@@ -15,6 +15,9 @@ function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(horusecView);
   context.subscriptions.push(vulnDiagnostics);
   context.subscriptions.push(statusLoading);
+
+  context.subscriptions.push(vscode.commands.registerCommand('horusec.config',
+    async () => configHorusec()));
 
   context.subscriptions.push(vscode.commands.registerCommand('horusec.start',
     async () => startHorusec()));
