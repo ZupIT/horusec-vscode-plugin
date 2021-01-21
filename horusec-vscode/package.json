@@ -54,6 +54,11 @@
           "group": "navigation"
         },
         {
+          "command": "horusec.config",
+          "when": "view == vulnerabilitiesView",
+          "group": "navigation"
+        },
+        {
           "command": "horusec.stop",
           "when": "view == vulnerabilitiesView",
           "group": "navigation"
@@ -85,6 +90,15 @@
         "icon": {
           "light": "resources/light/start.svg",
           "dark": "resources/dark/start.svg"
+        }
+      },
+      {
+        "command": "horusec.config",
+        "title": "Settings",
+        "category": "Horusec",
+        "icon": {
+          "light": "resources/light/config.svg",
+          "dark": "resources/dark/config.svg"
         }
       },
       {
