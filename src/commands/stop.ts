@@ -14,7 +14,7 @@ function stopHorusec() {
     return;
   }
 
-  startLoading('stop')
+  startLoading('stop');
 
   exec(getRemoveContainerCommand(), (error: any) => {
     if (error && !error.stack.includes('No such container: horusec-cli')) {

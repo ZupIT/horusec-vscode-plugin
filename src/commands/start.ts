@@ -41,7 +41,7 @@ function execStartCommand() {
         totalRestartHorusec++;
         if (totalRestartHorusec > 3) {
           finishStartCommand('error', error.message);
-          return
+          return;
         }
         finishStartCommand('retry');
         return;

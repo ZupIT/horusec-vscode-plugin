@@ -16,7 +16,7 @@ function stopLoading(command: 'start'|'stop'): void {
 }
 
 function isLoading(command: 'start'|'stop'): boolean {
-  return loading[command]
+  return loading[command];
 }
 
 export {
