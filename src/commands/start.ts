@@ -30,16 +30,22 @@ function execStartCommand() {
           vscode.window.showWarningMessage('Horusec was forced to stop');
         } else {
           vscode.window.showErrorMessage(`Horusec analysis failed: ${error.message}`);
+          finishAnalysis(false)
         }
       } else {
-        exec(getRemoveContainerCommand(), () => {
-          updateVulnDiagnotics();
-          vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
-        });
+        finishAnalysis(true)
       }
-
-      stopLoading();
     }, 300);
+  });
+}
+
+function finishAnalysis(withSuccess: boolean): void {
+  exec(getRemoveContainerCommand(), () => {
+    if (withSuccess) {
+      updateVulnDiagnotics();
+      vscode.window.showInformationMessage(`Horusec: Analysis finished with success!`);
+    }
+    stopLoading();
   });
 }
 
