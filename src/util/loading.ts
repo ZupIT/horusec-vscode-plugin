@@ -1,18 +1,22 @@
 import * as vscode from 'vscode';
 
-let isLoading: boolean;
+let loading = {start: false, stop: false};
 const statusLoading = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
 statusLoading.text = '$(sync~spin) Horusec: Security analysis running';
 statusLoading.tooltip = 'Hold on! Horusec is analyzing your code.';
 
-function startLoading(): void {
-  isLoading = true;
+function startLoading(command: 'start'|'stop'): void {
+  loading[command] = true;
   statusLoading.show();
 }
 
-function stopLoading(): void {
+function stopLoading(command: 'start'|'stop'): void {
   statusLoading.hide();
-  isLoading = false;
+  loading[command] = false;
+}
+
+function isLoading(command: 'start'|'stop'): boolean {
+  return loading[command]
 }
 
 export {
