@@ -28,7 +28,7 @@ function execStartCommand() {
   exec(getStartCommand(), (error: any) => {
     setTimeout(() => {
       if (proccessFinishedWithSuccess(error) || proccessExitedBecauseFondVulnerabilities(error)) {
-        finishStartCommand('success')
+        finishStartCommand('success');
         return;
       }
 
@@ -38,35 +38,35 @@ function execStartCommand() {
       }
 
       if (proccessExitedBecauseAlreadyExistHorusecCliContainer(error)) {
-        totalRestartHorusec++
+        totalRestartHorusec++;
         if (totalRestartHorusec > 3) {
-          finishStartCommand('error', error.message)
+          finishStartCommand('error', error.message);
           return
         }
-        finishStartCommand('retry')
+        finishStartCommand('retry');
         return;
       }
 
-      finishStartCommand('error', error.message)
+      finishStartCommand('error', error.message);
       return;
     }, 300);
   });
 }
 
 function proccessFinishedWithSuccess(error: any): boolean {
-  return !error
+  return !error;
 }
 
 function proccessWasForcedToStop(error: any): boolean {
-  return !isLoading('start') && error && error.stack.includes('ChildProcess.exithandler')
+  return !isLoading('start') && error && error.stack.includes('ChildProcess.exithandler');
 }
 
 function proccessExitedBecauseFondVulnerabilities(error: any): boolean {
-  return error && error.stack.includes('Error: analysis finished with blocking vulnerabilities')
+  return error && error.stack.includes('Error: analysis finished with blocking vulnerabilities');
 }
 
 function proccessExitedBecauseAlreadyExistHorusecCliContainer(error: any): boolean {
-  return error && error.stack.includes('Conflict. The container name \"/horusec-cli\" is already in use')
+  return error && error.stack.includes('Conflict. The container name \"/horusec-cli\" is already in use');
 }
 
 function finishStartCommand(type: 'success'|'error'|'retry', err: any = ''): void {
@@ -80,7 +80,7 @@ function finishStartCommand(type: 'success'|'error'|'retry', err: any = ''): voi
       stopLoading('start');
     } else if (type === 'retry') {
       stopLoading('start');
-      startHorusec()
+      startHorusec();
     }
     stopLoading('stop');
   });
