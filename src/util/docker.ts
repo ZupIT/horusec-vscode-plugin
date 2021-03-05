@@ -15,7 +15,7 @@ export function getStartCommand(): string {
 }
 
 export function getRemoveContainerCommand(): string {
-  return `docker rm ${containerName} -f`;
+  return `docker rm $(docker ps -a | awk '{ print $1,$2 }' | grep horuszup | awk '{print $1 }') -f`;
 }
 
 function getStartCommandWindows() {

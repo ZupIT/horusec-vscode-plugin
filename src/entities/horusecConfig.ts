@@ -19,7 +19,7 @@ export interface HorusecConfigFile {
   horusecCliRepositoryName?: string;
   horusecCliCustomRulesPath?: string;
   horusecCliEnableInformationSeverity?: boolean;
-  EnvContainerBindProjectPath?: string;
+  horusecCliContainerBindProjectPath?: string;
   horusecCliHeaders?: string;
   horusecCliWorkDir?: any;
   horusecCliToolsConfig?: any;

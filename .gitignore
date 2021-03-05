@@ -1,6 +1,7 @@
 out
 dist
-build
+build/*
+!build/node-extension.webpack.config.js
 node_modules
 .vscode-test/
 *.vsix

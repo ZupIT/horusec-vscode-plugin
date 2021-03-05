@@ -105,13 +105,13 @@ const configOtions = [
     description: 'Used to enable or disable information severity vulnerabilities, information vulnerabilities can contain a lot of false positives.'
   },
   {
-    key: 'EnvContainerBindProjectPath',
+    key: 'horusecCliContainerBindProjectPath',
     example: '[string] Example: ./project/folder-to-analyse',
     description: 'Used to pass project path in host when running horusec cli inside a container.',
   },
   {
     key: 'horusecCliHeaders',
-    example: '[string]',
+    example: '[string] Example: {\"x-header\": \"x-value\"}',
     description: 'Used to send dynamic headers on dispatch http request to horusec api service.'
   },
 ];
