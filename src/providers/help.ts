@@ -27,11 +27,11 @@ export class HelpProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
   public renderLinksList() {
     this.data = [
       new ItemLink('Discover the Horusec', 'https://horusec.io/', 'rocket.svg', this.context),
-      new ItemLink('Extension documentation', 'https://docs.horusec.io/v/v1-eng/references/extensions/visual-studio-code', 'book.svg', this.context),
-      new ItemLink('Horusec documentation', 'https://docs.horusec.io/v/v1-eng', 'book.svg', this.context),
-      new ItemLink('Source Code', 'https://github.com/ZupIT/horusec-extensions', 'github.svg', this.context),
-      new ItemLink('Review Issues', 'https://github.com/ZupIT/horusec-extensions/issues', 'message.svg', this.context),
-      new ItemLink('Report Issue', 'https://github.com/ZupIT/horusec-extensions/issues/new/choose', 'alert.svg', this.context)
+      new ItemLink('Extension documentation', 'https://horusec.io/docs/extensions/visual-studio-code/', 'book.svg', this.context),
+      new ItemLink('Horusec documentation', 'https://horusec.io/docs/overview/', 'book.svg', this.context),
+      new ItemLink('Source Code', 'https://github.com/ZupIT/horusec-vscode-plugin', 'github.svg', this.context),
+      new ItemLink('Review Issues', 'https://github.com/ZupIT/horusec-vscode-plugin/issues', 'message.svg', this.context),
+      new ItemLink('Report Issue', 'https://github.com/ZupIT/horusec-vscode-plugin/issues/new/choose', 'alert.svg', this.context)
     ],
 
       this._onDidChangeTreeData.fire();
