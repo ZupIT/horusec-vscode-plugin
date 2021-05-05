@@ -78,9 +78,9 @@ function setDiagnosticRelatedInformation(document: vscode.TextDocument,
  */
 function createDiagnosticRange(document: vscode.TextDocument,
   vulnLine: number): vscode.Range {
-  var line = 1
+  var line = 1;
   if (vulnLine > 0) {
-    line = vulnLine
+    line = vulnLine;
   }
   var lineRange = document.lineAt(line - 1).range;
 
