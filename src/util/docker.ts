@@ -1,7 +1,7 @@
 import { platform } from 'os';
 import * as vscode from 'vscode';
 
-const cliImage = 'horuszup/horusec-cli:v1.7.0';
+const cliImage = 'horuszup/horusec-cli:v1.10.3';
 const containerName = 'horusec-cli';
 
 export function getStartCommand(): string {
