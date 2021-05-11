@@ -147,6 +147,11 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
 
   private getIconPathByType(type: string): string | vscode.Uri | { light: string | vscode.Uri; dark: string | vscode.Uri; } | vscode.ThemeIcon | undefined {
     switch (type) {
+      case 'CRITICAL':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'critical.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'critical.svg'))
+        };
       case 'HIGH':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'high.svg')),
@@ -162,15 +167,15 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'low.svg')),
           dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'low.svg'))
         };
-      case 'AUDIT':
-        return {
-          light: this.context.asAbsolutePath(path.join('resources', 'light', 'audit.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'audit.svg'))
-        };
       case 'INFO':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'info.svg')),
           dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'info.svg'))
+        };
+      case 'UNKNOWN':
+        return {
+          light: this.context.asAbsolutePath(path.join('resources', 'light', 'unknown.svg')),
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'unknown.svg'))
         };
       case 'FOLDER':
         return {
