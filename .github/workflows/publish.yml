@@ -21,9 +21,8 @@ jobs:
       run: make install-horusec-vscode
     - name: Lint
       run: make lint-horusec-vscode
-    - name: Publish Extension
-      uses: lannonbr/vsce-action@master
+    - name: Publish to Visual Studio Marketplace
+      uses: HaaLeo/publish-vscode-extension@v0
       with:
-        args: "publish -p $VSCE_TOKEN"
-        env:
-          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+        pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+        registryUrl: https://marketplace.visualstudio.com
