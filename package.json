@@ -5,7 +5,7 @@
   "version": "1.8.0",
   "publisher": "ZupInnovation",
   "repository": "https://github.com/ZupIT/horusec-extensions/tree/master/horusec-vscode",
-  "icon": "https://raw.githubusercontent.com/ZupIT/horusec-vscode-plugin/master/resources/horus_icon.png",
+  "icon": "/resources/horus_icon.png",
   "engines": {
     "vscode": "^1.51.0"
   },
