@@ -1,14 +1,12 @@
-name: HorusecVsCode
+name: Publish
 
 on:
   push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "**" ]
+    branches: [ "master" ]
 
 jobs:
-  lint:
-    name: install-lint
+  publish:
+    name: publish-extension
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
@@ -23,3 +21,9 @@ jobs:
       run: make install-horusec-vscode
     - name: Lint
       run: make lint-horusec-vscode
+    - name: Publish Extension
+      uses: lannonbr/vsce-action@master
+      with:
+        args: "publish -p $VSCE_TOKEN"
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
