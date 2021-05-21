@@ -11,5 +11,5 @@ jobs:
       uses: actions/checkout@v2
     - name: Running Horusec Security
       run: |
-        curl -fsSL https://horusec.io/bin/install.sh | bash
+        curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/master/deployments/scripts/install.sh | bash -s latest
         horusec start -p="./" -e="true"
