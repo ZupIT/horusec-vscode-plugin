@@ -1,14 +1,12 @@
-name: HorusecVsCode
+name: Publish
 
 on:
   push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "**" ]
+    branches: [ "master" ]
 
 jobs:
-  lint:
-    name: install-lint
+  publish:
+    name: publish-extension
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
@@ -23,3 +21,8 @@ jobs:
       run: make install-horusec-vscode
     - name: Lint
       run: make lint-horusec-vscode
+    - name: Publish to Visual Studio Marketplace
+      uses: HaaLeo/publish-vscode-extension@v0
+      with:
+        pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+        registryUrl: https://marketplace.visualstudio.com

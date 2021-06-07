@@ -1,7 +1,7 @@
 import { platform } from 'os';
 import * as vscode from 'vscode';
 
-const cliImage = 'horuszup/horusec-cli:v1.10.3';
+const cliImage = 'horuszup/horusec-cli:v2.1.0';
 const containerName = 'horusec-cli';
 
 export function getStartCommand(): string {
@@ -15,7 +15,7 @@ export function getStartCommand(): string {
 }
 
 export function getRemoveContainerCommand(): string {
-  return `docker rm $(docker ps -a | awk '{ print $1,$2 }' | grep horuszup | awk '{print $1 }') -f`;
+  return `docker rm ${containerName} -f`;
 }
 
 function getStartCommandWindows() {
