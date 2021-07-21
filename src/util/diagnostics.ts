@@ -15,7 +15,7 @@
  */
 
 import * as vscode from 'vscode';
-import { Analysis, AnalysisVulnerability } from '../entities/vulnerability';
+import { Analysis, AnalysisVulnerability, Vulnerability } from '../entities/vulnerability';
 import { vulnDiagnostics, vulnsProvider } from '../extension';
 import { parseAnalysisToVulnerabilities, parseOutputToAnalysis } from './parser';
 
@@ -47,7 +47,7 @@ function refreshDiagnostics(document: vscode.TextDocument,
   const diagnostics: vscode.Diagnostic[] = [];
 
   analysisVulnerabilities.forEach(analysisVulnerability => {
-    if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerabilities.file)) {
+    if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerability.file)) {
       diagnostics.push(createDiagnostic(document, analysisVulnerability));
     }
   });
@@ -56,15 +56,14 @@ function refreshDiagnostics(document: vscode.TextDocument,
 }
 
 function removeDiagnostic(vulnHash: string) {
-  lastAnalysis.analysisVulnerabilities = lastAnalysis.analysisVulnerabilities.filter((item) => item.vulnerabilities.vulnHash !== vulnHash);
-
+  lastAnalysis.analysisVulnerabilities = lastAnalysis.analysisVulnerabilities.filter((item) => item.vulnerability.vulnHash !== vulnHash);
   updateVulnDiagnotics(lastAnalysis);
 }
 
 function createDiagnostic(document: vscode.TextDocument, analysisVulnerability: AnalysisVulnerability): vscode.Diagnostic {
   let diagnostic = new vscode.Diagnostic(
-    createDiagnosticRange(document, Number(analysisVulnerability.vulnerabilities.line)),
-    analysisVulnerability.vulnerabilities.vulnHash,
+    createDiagnosticRange(document, Number(analysisVulnerability.vulnerability.line)),
+    analysisVulnerability.vulnerability.vulnHash,
     vscode.DiagnosticSeverity.Warning
   );
 
@@ -74,16 +73,16 @@ function createDiagnostic(document: vscode.TextDocument, analysisVulnerability: 
 function setDiagnosticData(document: vscode.TextDocument, diagnostic: vscode.Diagnostic,
   analysisVulnerability: AnalysisVulnerability): vscode.Diagnostic {
   diagnostic.relatedInformation = setDiagnosticRelatedInformation(document, analysisVulnerability);
-  diagnostic.code = analysisVulnerability.vulnerabilities.severity;
-  diagnostic.source = analysisVulnerability.vulnerabilities.code;
+  diagnostic.code = analysisVulnerability.vulnerability.severity;
+  diagnostic.source = analysisVulnerability.vulnerability.code;
   return diagnostic;
 }
 
 function setDiagnosticRelatedInformation(document: vscode.TextDocument,
   analysisVulnerability: AnalysisVulnerability): vscode.DiagnosticRelatedInformation[] {
   return [new vscode.DiagnosticRelatedInformation(
-    createDiagnosticLocation(document, Number(analysisVulnerability.vulnerabilities.line)),
-    getDetails(analysisVulnerability.vulnerabilities.details)
+    createDiagnosticLocation(document, Number(analysisVulnerability.vulnerability.line)),
+    getDetails(analysisVulnerability.vulnerability)
   )];
 }
 
@@ -125,7 +124,7 @@ function createDiagnosticPosition(character: number,
 function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection,
   analysis: Analysis): void {
   analysis.analysisVulnerabilities.forEach(analysisVulnerability => {
-    vscode.workspace.openTextDocument(getFilepath(analysisVulnerability.vulnerabilities.file)).then(document => {
+    vscode.workspace.openTextDocument(getFilepath(analysisVulnerability.vulnerability.file)).then(document => {
       refreshDiagnostics(
         document,
         vulnDiagnostics,
@@ -135,12 +134,14 @@ function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection
   });
 }
 
-function getDetails(details: string): string {
+function getDetails(vulnerability: Vulnerability): string {
+  const { details, language, securityTool } = vulnerability;
+
   if (details === '') {
     return '-';
   }
 
-  return details;
+  return `${language} - ${securityTool} : ${details}`;
 }
 
 function getFilepath(filepath: string): string {
