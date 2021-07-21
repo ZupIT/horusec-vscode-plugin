@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-const configOtions = [
+import { HorusecConfigFile } from '../entities/horusecConfig';
+interface ConfigOptions {
+    key: keyof HorusecConfigFile;
+    example: string;
+    description: string;
+};
+
+const configOptions: ConfigOptions[] = [
   {
     key: 'horusecCliMonitorRetryInSeconds',
     example: '[number] Example: 10',
@@ -130,12 +137,42 @@ const configOtions = [
     example: '[string] Example: {\"x-header\": \"x-value\"}',
     description: 'Used to send dynamic headers on dispatch http request to horusec api service.'
   },
+  {
+    key: 'horusecCliSeveritiesToIgnore',
+    example: '[string] Example: INFO',
+    description: 'Used to send dynamic headers on dispatch http request to horusec api service.This setting identifies which severity levels you want to ignore, it can be between: CRITICAL, HIGH, MEDIUM, LOW, UNKNOWN, INFO'
+  },
+  {
+    key: 'horusecCliWorkDir',
+    example: 'x',
+    description: 'This configuration informs horusec the corrected directory to run a specific language.'
+  },
+  {
+    key: 'horusecCliToolsConfig',
+    example: 'x',
+    description: 'This configuration informs Horusec which tools are enabled to perform.'
+  },
+  {
+    key: 'horusecCliCustomImages',
+    example: 'x',
+    description: 'This configuration informs Horusec where the language docker image is to rotate the analysis.'
+  },
+  {
+    key: 'horusecCliEnableOwaspDependencyCheck',
+    example: 'x',
+    description: 'Enables the owasp dependency check tool, it performs the dependencies analysis.'
+  },
+  {
+    key: 'horusecCliEnableShellcheck',
+    example: 'x',
+    description: 'Enables the shellcheck tool, it checks for errors in sh files.'
+  },
 ];
 
 const getConfigOptionsKeys = () => {
   const keys: string[] = [];
 
-  configOtions.forEach(configItem => {
+  configOptions.forEach(configItem => {
     keys.push(configItem.key);
   });
 
@@ -143,11 +180,11 @@ const getConfigOptionsKeys = () => {
 };
 
 const getConfigItemByKey = (key: string) => {
-  return configOtions.find((item) => item.key === key);
+  return configOptions.find((item) => item.key === key);
 };
 
 export {
-  configOtions,
+  configOptions,
   getConfigOptionsKeys,
   getConfigItemByKey
 };
