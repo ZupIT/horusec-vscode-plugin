@@ -139,32 +139,17 @@ const configOptions: ConfigOptions[] = [
   },
   {
     key: 'horusecCliSeveritiesToIgnore',
-    example: '[string] Example: INFO',
+    example: '[array string] Example: ["INFO"]',
     description: 'Used to send dynamic headers on dispatch http request to horusec api service.This setting identifies which severity levels you want to ignore, it can be between: CRITICAL, HIGH, MEDIUM, LOW, UNKNOWN, INFO'
   },
   {
-    key: 'horusecCliWorkDir',
-    example: 'x',
-    description: 'This configuration informs horusec the corrected directory to run a specific language.'
-  },
-  {
-    key: 'horusecCliToolsConfig',
-    example: 'x',
-    description: 'This configuration informs Horusec which tools are enabled to perform.'
-  },
-  {
-    key: 'horusecCliCustomImages',
-    example: 'x',
-    description: 'This configuration informs Horusec where the language docker image is to rotate the analysis.'
-  },
-  {
     key: 'horusecCliEnableOwaspDependencyCheck',
-    example: 'x',
+    example: '[boolean] Example: false',
     description: 'Enables the owasp dependency check tool, it performs the dependencies analysis.'
   },
   {
     key: 'horusecCliEnableShellcheck',
-    example: 'x',
+    example: '[boolean] Example: false',
     description: 'Enables the shellcheck tool, it checks for errors in sh files.'
   },
 ];
