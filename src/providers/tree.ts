@@ -127,7 +127,9 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
   }
 
   private createVulnerabilityInFileToTreeItem(currentVulnerability: Vulnerability): TreeItem {
-    const vuln = new TreeItem(currentVulnerability.details, undefined, currentVulnerability.vulnHash);
+    const { details, language, securityTool } = currentVulnerability;
+    const label = `${language} - ${securityTool} : ${details}`;
+    const vuln = new TreeItem(label, undefined, currentVulnerability.vulnHash);
     const basePath: string = vscode.workspace.rootPath || '';
     vuln.command = {
       command: 'horusec.open',
