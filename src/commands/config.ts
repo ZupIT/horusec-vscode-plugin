@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getConfigOptionsKeys, getConfigItemByKey } from '../util/confiOptions';
+import { getConfigOptionsKeys, getConfigItemByKey } from '../util/configOptions';
 import { writeInConfigFile } from '../util/configFile';
 
 async function configHorusec() {
