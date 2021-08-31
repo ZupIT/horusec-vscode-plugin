@@ -35,7 +35,7 @@ export function parseAnalysisToVulnerabilities(analysis: Analysis): Vulnerabilit
   let vulnerabilities: Vulnerability[] = [];
   if (analysis.analysisVulnerabilities) {
     analysis.analysisVulnerabilities.forEach((av) => {
-      vulnerabilities.push(av.vulnerabilities);
+      vulnerabilities.push(av.vulnerability);
     });
   }
   return vulnerabilities.filter((vul) => vul.type === 'Vulnerability');
