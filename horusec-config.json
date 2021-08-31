@@ -1,6 +1,7 @@
 {
 "horusecCliFalsePositiveHashes": [
-  "297ea674ae28e7e062ddc2445f15ac9ffadcc7247af63bcaf99f010f436c3d13"
+  "297ea674ae28e7e062ddc2445f15ac9ffadcc7247af63bcaf99f010f436c3d13",
+  "90c4be392e356b18035296f8f28b94917332bbda2dd3b71fbad20088a6246237"
 ],
   "horusecCliFilesOrPathsToIgnore": [
     "*tmp*",

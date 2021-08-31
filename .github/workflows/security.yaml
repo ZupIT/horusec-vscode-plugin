@@ -1,3 +1,4 @@
+ 
 # Copyright 2021 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: SecurityPipeline
-
-on: [push]
-
+name: Security
+on: [ "push" ]
 jobs:
-  horusec-security:
-    name: horusec-security
+  security:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: Running Horusec Security
-      run: |
-        curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/master/deployments/scripts/install.sh | bash -s latest
-        horusec start -p="./" -e="true"
+      - uses: actions/checkout@v2
+      - name: security
+        env:
+          HORUSEC_CLI_REPOSITORY_AUTHORIZATION: ${{ secrets.HORUSEC_CLI_REPOSITORY_AUTHORIZATION }}
+          HORUSEC_CLI_HORUSEC_API_URI: ${{ secrets.HORUSEC_CLI_HORUSEC_API_URI }}
+          HORUSEC_CLI_REPOSITORY_NAME: ${{ secrets.HORUSEC_CLI_REPOSITORY_NAME }}
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/master/deployments/scripts/install.sh | bash -s latest
+          horusec start -p . -e true -G true
