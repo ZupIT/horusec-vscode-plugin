@@ -156,7 +156,7 @@
     "mocha": "8.2.1",
     "ts-loader": "8.0.11",
     "typescript": "4.1.2",
-    "vscode-test": "1.4.1",
+    "vscode-test": "1.6.1",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12"
   },
