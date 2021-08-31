@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: HorusecVsCode
+name: Quality
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "develop", "main"]
   pull_request:
     branches: [ "**" ]
 
@@ -37,3 +37,7 @@ jobs:
       run: make install-horusec-vscode
     - name: Lint
       run: make lint-horusec-vscode
+    - name: Compile
+      run: make compile-horusec-vscode
+    - name: Build
+      run: make build-horusec-vscode
