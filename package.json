@@ -151,7 +151,7 @@
     "@types/vscode": "1.51.0",
     "@typescript-eslint/eslint-plugin": "4.8.2",
     "@typescript-eslint/parser": "4.8.2",
-    "eslint": "7.14.0",
+    "eslint": "7.32.0",
     "glob": "7.1.6",
     "mocha": "8.2.1",
     "ts-loader": "8.0.11",
