@@ -37,8 +37,9 @@ export interface HorusecConfigFile {
   horusecCliEnableInformationSeverity?: boolean;
   horusecCliContainerBindProjectPath?: string;
   horusecCliHeaders?: string;
-  horusecCliWorkDir?: any;
-  horusecCliToolsConfig?: any;
   horusecCliFalsePositiveHashes?: string[];
   horusecCliRiskAcceptHashes?: string[];
+  horusecCliSeveritiesToIgnore?: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'UNKNOWN', 'INFO'];
+  horusecCliEnableOwaspDependencyCheck?: boolean;
+  horusecCliEnableShellcheck?: boolean;
 }
