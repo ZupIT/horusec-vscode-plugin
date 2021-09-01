@@ -22,7 +22,6 @@ import { HorusecConfigFile } from '../entities/horusecConfig';
 import { vulnsProvider, vulnDiagnostics } from '../extension';
 import { removeDiagnostic } from '../util/diagnostics';
 
-
 function setAsFalsePositive(treeItem: TreeItem) {
   writeHashInFile(treeItem.vulnHash, 'falsePositive');
 }
@@ -41,7 +40,7 @@ function writeHashInFile(vulnHash: string, type: 'riskAccept' | 'falsePositive')
 
   let fileContent: HorusecConfigFile = {
     horusecCliFalsePositiveHashes: [],
-    horusecCliRiskAcceptHashes: []
+    horusecCliRiskAcceptHashes: [],
   };
 
   if (fs.existsSync(filePathString)) {
@@ -49,7 +48,7 @@ function writeHashInFile(vulnHash: string, type: 'riskAccept' | 'falsePositive')
       let horusecConfigData: HorusecConfigFile = JSON.parse(data);
 
       fileContent = {
-        ...horusecConfigData
+        ...horusecConfigData,
       };
 
       if (type === 'falsePositive') {
@@ -78,7 +77,4 @@ function writeHashInFile(vulnHash: string, type: 'riskAccept' | 'falsePositive')
   removeDiagnostic(vulnHash);
 }
 
-export {
-  setAsFalsePositive,
-  setAsRiskAccept
-};
+export { setAsFalsePositive, setAsRiskAccept };
