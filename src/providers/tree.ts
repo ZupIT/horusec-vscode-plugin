@@ -24,10 +24,7 @@ export class TreeItem extends vscode.TreeItem {
   vulnHash?: string;
 
   constructor(label: string, children?: TreeItem[], vulnHash?: string) {
-    super(
-      label,
-      children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded,
-    );
+    super(label, children === undefined ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Expanded);
     this.children = children;
     this.vulnHash = vulnHash;
   }
@@ -61,7 +58,7 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
       if (file) {
         const filteredFile = {
           ...file,
-          children: file.children.filter((vuln) => vuln.vulnHash !== vulnHash)
+          children: file.children.filter((vuln) => vuln.vulnHash !== vulnHash),
         };
 
         if (filteredFile.children.length <= 0) {
@@ -89,15 +86,13 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
   public openFile(vuln: Vulnerability): void {
     if (vuln && vuln.file) {
       const openPath = vscode.Uri.file(vuln.file);
-      vscode.workspace.openTextDocument(openPath)
-        .then((doc) => {
-          vscode.window.showTextDocument(doc)
-            .then((editor) => {
-              const range = createDiagnosticRange(doc, parseInt(vuln.line, 10));
-              editor.revealRange(range);
-              editor.selection = new vscode.Selection(range.start, range.end);
-            });
+      vscode.workspace.openTextDocument(openPath).then((doc) => {
+        vscode.window.showTextDocument(doc).then((editor) => {
+          const range = createDiagnosticRange(doc, parseInt(vuln.line, 10));
+          editor.revealRange(range);
+          editor.selection = new vscode.Selection(range.start, range.end);
         });
+      });
     }
   }
 
@@ -105,27 +100,18 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
     return vulnerabilities.reduce((previousVulnerability, currentVulnerability) => {
       var names = currentVulnerability.file.replace(vscode.workspace.rootPath + '/', '').split('/');
 
-      names.reduce((previousName: any, currentName: any, index: number) =>
-        this.execReducePathToListTreeItem(previousName, currentName, index, currentVulnerability, names.length),
-        previousVulnerability
-      );
+      names.reduce((previousName: any, currentName: any, index: number) => this.execReducePathToListTreeItem(previousName, currentName, index, currentVulnerability, names.length), previousVulnerability);
       return previousVulnerability;
     }, []);
   }
 
-  private execReducePathToListTreeItem(
-    previousName: any,
-    currentName: any,
-    index: number,
-    currentVulnerability: Vulnerability,
-    namesLength: number
-  ): TreeItem[] | undefined {
+  private execReducePathToListTreeItem(previousName: any, currentName: any, index: number, currentVulnerability: Vulnerability, namesLength: number): TreeItem[] | undefined {
     let temp: TreeItem = previousName.find((o: any) => o.label === currentName);
 
     if (!temp) {
       temp = new TreeItem(currentName, []);
       previousName.push(temp);
-    };
+    }
 
     if (index + 1 === namesLength) {
       temp.iconPath = this.getIconPathByType('FILE');
@@ -153,9 +139,9 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
       arguments: [
         {
           ...currentVulnerability,
-          file: path.join(basePath, currentVulnerability.file)
+          file: path.join(basePath, currentVulnerability.file),
         },
-      ]
+      ],
     };
     vuln.iconPath = this.getIconPathByType(currentVulnerability.severity);
     vuln.description = `${currentVulnerability.file}[${currentVulnerability.line}:${currentVulnerability.column}] ${currentVulnerability.severity} `;
@@ -163,47 +149,47 @@ export class TreeProvider implements vscode.TreeDataProvider<TreeItem> {
     return vuln;
   }
 
-  private getIconPathByType(type: string): string | vscode.Uri | { light: string | vscode.Uri; dark: string | vscode.Uri; } | vscode.ThemeIcon | undefined {
+  private getIconPathByType(type: string): string | vscode.Uri | { light: string | vscode.Uri; dark: string | vscode.Uri } | vscode.ThemeIcon | undefined {
     switch (type) {
       case 'CRITICAL':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'critical.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'critical.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'critical.svg')),
         };
       case 'HIGH':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'high.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'high.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'high.svg')),
         };
       case 'MEDIUM':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'medium.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'medium.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'medium.svg')),
         };
       case 'LOW':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'low.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'low.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'low.svg')),
         };
       case 'INFO':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'info.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'info.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'info.svg')),
         };
       case 'UNKNOWN':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'unknown.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'unknown.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'unknown.svg')),
         };
       case 'FOLDER':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'folder.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'folder.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'folder.svg')),
         };
       case 'FILE':
         return {
           light: this.context.asAbsolutePath(path.join('resources', 'light', 'file.svg')),
-          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'file.svg'))
+          dark: this.context.asAbsolutePath(path.join('resources', 'dark', 'file.svg')),
         };
       default:
         return undefined;
