@@ -31,7 +31,15 @@ function updateVulnDiagnotics(analysis?: Analysis) {
 
     lastAnalysis = analysis;
 
-    vulnsProvider.insertVulnerabilities(parseAnalysisToVulnerabilities(analysis));
+    const vulnerabilitiesFound: Vulnerability[] = parseAnalysisToVulnerabilities(analysis) || [];
+
+    if (!vulnerabilitiesFound || vulnerabilitiesFound.length <= 0 ) {
+      vscode.window.showInformationMessage('Awesome! Horusec did not identify any vulnerabilities in his code.');
+    } else {
+      vscode.window.showWarningMessage(`Horusec: ${vulnerabilitiesFound.length} vulnerabilities were found.`);
+    }
+
+    vulnsProvider.insertVulnerabilities(vulnerabilitiesFound);
 
     subscribeToDocumentChanges(
       vulnDiagnostics,
