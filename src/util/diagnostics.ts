@@ -15,9 +15,16 @@
  */
 
 import * as vscode from 'vscode';
-import { Analysis, AnalysisVulnerability, Vulnerability } from '../entities/vulnerability';
+import {
+  Analysis,
+  AnalysisVulnerability,
+  Vulnerability,
+} from '../entities/vulnerability';
 import { vulnDiagnostics, vulnsProvider } from '../extension';
-import { parseAnalysisToVulnerabilities, parseOutputToAnalysis } from './parser';
+import {
+  parseAnalysisToVulnerabilities,
+  parseOutputToAnalysis,
+} from './parser';
 
 let lastAnalysis: Analysis = null;
 
@@ -31,59 +38,89 @@ function updateVulnDiagnotics(analysis?: Analysis) {
 
     lastAnalysis = analysis;
 
-    vulnsProvider.insertVulnerabilities(parseAnalysisToVulnerabilities(analysis));
-
-    subscribeToDocumentChanges(
-      vulnDiagnostics,
-      analysis
+    vulnsProvider.insertVulnerabilities(
+      parseAnalysisToVulnerabilities(analysis)
     );
-  } catch (error) {
+
+    subscribeToDocumentChanges(vulnDiagnostics, analysis);
+  } catch (error: any) {
     vscode.window.showErrorMessage(`Horusec error: ${error.message}`);
   }
 }
 
-function refreshDiagnostics(document: vscode.TextDocument,
-  vulnDiagnostics: vscode.DiagnosticCollection, analysisVulnerabilities: AnalysisVulnerability[]): void {
+function refreshDiagnostics(
+  document: vscode.TextDocument,
+  vulnDiagnostics: vscode.DiagnosticCollection,
+  analysisVulnerabilities: AnalysisVulnerability[]
+): void {
   const diagnostics: vscode.Diagnostic[] = [];
 
-  analysisVulnerabilities.forEach(analysisVulnerability => {
-    if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerability.file)) {
-      diagnostics.push(createDiagnostic(document, analysisVulnerability));
-    }
-  });
+  if (analysisVulnerabilities && analysisVulnerabilities.length >= 0) {
+    analysisVulnerabilities.forEach((analysisVulnerability) => {
+      if (
+        document &&
+        document.uri.fsPath ===
+          getFilepath(analysisVulnerability.vulnerabilities.file)
+      ) {
+        diagnostics.push(createDiagnostic(document, analysisVulnerability));
+      }
+    });
+  }
 
   vulnDiagnostics.set(document.uri, diagnostics);
 }
 
 function removeDiagnostic(vulnHash: string) {
-  lastAnalysis.analysisVulnerabilities = lastAnalysis.analysisVulnerabilities.filter((item) => item.vulnerability.vulnHash !== vulnHash);
+  lastAnalysis.analysisVulnerabilities =
+    lastAnalysis.analysisVulnerabilities.filter(
+      (item) => item.vulnerabilities.vulnHash !== vulnHash
+    );
   updateVulnDiagnotics(lastAnalysis);
 }
 
-function createDiagnostic(document: vscode.TextDocument, analysisVulnerability: AnalysisVulnerability): vscode.Diagnostic {
+function createDiagnostic(
+  document: vscode.TextDocument,
+  analysisVulnerability: AnalysisVulnerability
+): vscode.Diagnostic {
   let diagnostic = new vscode.Diagnostic(
-    createDiagnosticRange(document, Number(analysisVulnerability.vulnerability.line)),
-    analysisVulnerability.vulnerability.vulnHash,
+    createDiagnosticRange(
+      document,
+      Number(analysisVulnerability.vulnerabilities.line)
+    ),
+    analysisVulnerability.vulnerabilities.vulnHash,
     vscode.DiagnosticSeverity.Warning
   );
 
   return setDiagnosticData(document, diagnostic, analysisVulnerability);
 }
 
-function setDiagnosticData(document: vscode.TextDocument, diagnostic: vscode.Diagnostic,
-  analysisVulnerability: AnalysisVulnerability): vscode.Diagnostic {
-  diagnostic.relatedInformation = setDiagnosticRelatedInformation(document, analysisVulnerability);
-  diagnostic.code = analysisVulnerability.vulnerability.severity;
-  diagnostic.source = analysisVulnerability.vulnerability.code;
+function setDiagnosticData(
+  document: vscode.TextDocument,
+  diagnostic: vscode.Diagnostic,
+  analysisVulnerability: AnalysisVulnerability
+): vscode.Diagnostic {
+  diagnostic.relatedInformation = setDiagnosticRelatedInformation(
+    document,
+    analysisVulnerability
+  );
+  diagnostic.code = analysisVulnerability.vulnerabilities.severity;
+  diagnostic.source = analysisVulnerability.vulnerabilities.code;
   return diagnostic;
 }
 
-function setDiagnosticRelatedInformation(document: vscode.TextDocument,
-  analysisVulnerability: AnalysisVulnerability): vscode.DiagnosticRelatedInformation[] {
-  return [new vscode.DiagnosticRelatedInformation(
-    createDiagnosticLocation(document, Number(analysisVulnerability.vulnerability.line)),
-    getDetails(analysisVulnerability.vulnerability)
-  )];
+function setDiagnosticRelatedInformation(
+  document: vscode.TextDocument,
+  analysisVulnerability: AnalysisVulnerability
+): vscode.DiagnosticRelatedInformation[] {
+  return [
+    new vscode.DiagnosticRelatedInformation(
+      createDiagnosticLocation(
+        document,
+        Number(analysisVulnerability.vulnerabilities.line)
+      ),
+      getDetails(analysisVulnerability.vulnerabilities)
+    ),
+  ];
 }
 
 /**
@@ -91,8 +128,10 @@ function setDiagnosticRelatedInformation(document: vscode.TextDocument,
  * @param document vscode text document
  * @param line vulnerability line
  */
-function createDiagnosticRange(document: vscode.TextDocument,
-  vulnLine: number): vscode.Range {
+function createDiagnosticRange(
+  document: vscode.TextDocument,
+  vulnLine: number
+): vscode.Range {
   var line = 1;
   if (vulnLine > 0) {
     line = vulnLine;
@@ -105,33 +144,45 @@ function createDiagnosticRange(document: vscode.TextDocument,
   );
 }
 
-function createDiagnosticLocation(document: vscode.TextDocument,
-  line: number): vscode.Location {
+function createDiagnosticLocation(
+  document: vscode.TextDocument,
+  line: number
+): vscode.Location {
   return new vscode.Location(
     document.uri,
     createDiagnosticRange(document, line)
   );
 }
 
-function createDiagnosticPosition(character: number,
-  line: number): vscode.Position {
-  return new vscode.Position(
-    line - 1,
-    character
-  );
+function createDiagnosticPosition(
+  character: number,
+  line: number
+): vscode.Position {
+  return new vscode.Position(line - 1, character);
 }
 
-function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection,
-  analysis: Analysis): void {
-  analysis.analysisVulnerabilities.forEach(analysisVulnerability => {
-    vscode.workspace.openTextDocument(getFilepath(analysisVulnerability.vulnerability.file)).then(document => {
-      refreshDiagnostics(
-        document,
-        vulnDiagnostics,
-        analysis.analysisVulnerabilities
-      );
+function subscribeToDocumentChanges(
+  vulnDiagnostics: vscode.DiagnosticCollection,
+  analysis: Analysis
+): void {
+  if (
+    analysis.analysisVulnerabilities &&
+    analysis.analysisVulnerabilities.length >= 0
+  ) {
+    analysis.analysisVulnerabilities.forEach((analysisVulnerability) => {
+      vscode.workspace
+        .openTextDocument(
+          getFilepath(analysisVulnerability.vulnerabilities.file)
+        )
+        .then((document) => {
+          refreshDiagnostics(
+            document,
+            vulnDiagnostics,
+            analysis.analysisVulnerabilities
+          );
+        });
     });
-  });
+  }
 }
 
 function getDetails(vulnerability: Vulnerability): string {

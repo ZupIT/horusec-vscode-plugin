@@ -31,7 +31,9 @@ const writeInConfigFile = (key: string, value: any) => {
     wsedit.createFile(filePathVSCode);
     fs.writeFileSync(filePathToOpen, JSON.stringify({}, null, 2));
     vscode.workspace.applyEdit(wsedit);
-    vscode.window.showInformationMessage('The horusec-config.json settings file was created at the root of the current workspace.');
+    vscode.window.showInformationMessage(
+      'The horusec-config.json settings file was created at the root of the current workspace.'
+    );
   }
 
   const buf = fs.readFileSync(filePathString);
@@ -39,15 +41,18 @@ const writeInConfigFile = (key: string, value: any) => {
 
   if (currentDataInFile) {
     currentDataInFile = Object.assign(currentDataInFile, { [key]: value });
-    fs.writeFileSync(filePathToOpen, JSON.stringify(currentDataInFile, null, 2));
+    fs.writeFileSync(
+      filePathToOpen,
+      JSON.stringify(currentDataInFile, null, 2)
+    );
   } else {
     fs.writeFileSync(filePathToOpen, JSON.stringify({ [key]: value }, null, 2));
   }
 
   vscode.workspace.applyEdit(wsedit);
-  vscode.window.showInformationMessage(`The ${key} flag was added to the settings file: horusec-config.json`);
+  vscode.window.showInformationMessage(
+    `The ${key} flag was added to the settings file: horusec-config.json`
+  );
 };
 
-export {
-  writeInConfigFile
-};
+export { writeInConfigFile };
