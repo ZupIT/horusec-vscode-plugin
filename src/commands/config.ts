@@ -21,7 +21,7 @@ import { writeInConfigFile } from '../util/configFile';
 async function configHorusec() {
   let selectedOptionKey = await vscode.window.showQuickPick(getConfigOptionsKeys(), {
     canPickMany: false,
-    placeHolder: `Select the flag you want to configure:`
+    placeHolder: `Select the flag you want to configure:`,
   });
 
   if (selectedOptionKey) {
@@ -37,6 +37,4 @@ async function configHorusec() {
   }
 }
 
-export {
-  configHorusec
-};
+export { configHorusec };
