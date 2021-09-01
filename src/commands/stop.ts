@@ -19,7 +19,6 @@ import { getRemoveContainerCommand } from '../util/docker';
 import * as vscode from 'vscode';
 import { stopLoading, isLoading, startLoading } from '../util/loading';
 
-
 function stopHorusec() {
   if (isLoading('stop')) {
     vscode.window.showWarningMessage('Hold on! Horusec is stopping your analysis.');
@@ -42,6 +41,4 @@ function stopHorusec() {
   });
 }
 
-export {
-  stopHorusec
-};
+export { stopHorusec };
