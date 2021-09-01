@@ -43,7 +43,7 @@ function updateVulnDiagnotics(analysis?: Analysis) {
     );
 
     subscribeToDocumentChanges(vulnDiagnostics, analysis);
-  } catch (error) {
+  } catch (error: any) {
     vscode.window.showErrorMessage(`Horusec error: ${error.message}`);
   }
 }
