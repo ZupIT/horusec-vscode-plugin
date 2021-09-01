@@ -41,15 +41,14 @@ export class HelpProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
   }
 
   public renderLinksList() {
-    this.data = [
+    (this.data = [
       new ItemLink('Discover the Horusec', 'https://horusec.io/', 'rocket.svg', this.context),
       new ItemLink('Extension documentation', 'https://horusec.io/docs/extensions/visual-studio-code/', 'book.svg', this.context),
       new ItemLink('Horusec documentation', 'https://horusec.io/docs/overview/', 'book.svg', this.context),
       new ItemLink('Source Code', 'https://github.com/ZupIT/horusec-vscode-plugin', 'github.svg', this.context),
       new ItemLink('Review Issues', 'https://github.com/ZupIT/horusec-vscode-plugin/issues', 'message.svg', this.context),
-      new ItemLink('Report Issue', 'https://github.com/ZupIT/horusec-vscode-plugin/issues/new/choose', 'alert.svg', this.context)
-    ],
-
+      new ItemLink('Report Issue', 'https://github.com/ZupIT/horusec-vscode-plugin/issues/new/choose', 'alert.svg', this.context),
+    ]),
       this._onDidChangeTreeData.fire();
   }
 
@@ -58,22 +57,19 @@ export class HelpProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
   }
 }
 
-
 class ItemLink extends vscode.TreeItem {
   constructor(label: string, link: string, icon: string, context: vscode.ExtensionContext) {
-    super(
-      label,
-    );
+    super(label);
 
     this.command = {
       command: 'horusec.openLink',
       title: 'Open link',
-      arguments: [link]
+      arguments: [link],
     };
 
     this.iconPath = {
       dark: context.asAbsolutePath(path.join('resources', 'dark', icon)),
-      light: context.asAbsolutePath(path.join('resources', 'light', icon))
+      light: context.asAbsolutePath(path.join('resources', 'light', icon)),
     };
   }
 }

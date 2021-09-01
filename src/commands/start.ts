@@ -82,10 +82,10 @@ function proccessExitedBecauseFondVulnerabilities(error: any): boolean {
 }
 
 function proccessExitedBecauseAlreadyExistHorusecCliContainer(error: any): boolean {
-  return error && error.stack.includes('Conflict. The container name \"/horusec-cli\" is already in use');
+  return error && error.stack.includes('Conflict. The container name "/horusec-cli" is already in use');
 }
 
-function finishStartCommand(type: 'success'|'error'|'retry', err: any = ''): void {
+function finishStartCommand(type: 'success' | 'error' | 'retry', err: any = ''): void {
   exec(getRemoveContainerCommand(), () => {
     if (type === 'success') {
       updateVulnDiagnotics();
@@ -102,6 +102,4 @@ function finishStartCommand(type: 'success'|'error'|'retry', err: any = ''): voi
   });
 }
 
-export {
-  startHorusec
-};
+export { startHorusec };
