@@ -33,7 +33,7 @@ export function parseOutputToAnalysis(): Analysis {
 
 export function parseAnalysisToVulnerabilities(analysis: Analysis): Vulnerability[] {
   let vulnerabilities: Vulnerability[] = [];
-  if (analysis.analysisVulnerabilities) {
+  if (analysis.analysisVulnerabilities && analysis.analysisVulnerabilities.length >= 0) {
     analysis.analysisVulnerabilities.forEach((av) => {
       vulnerabilities.push(av.vulnerabilities);
     });

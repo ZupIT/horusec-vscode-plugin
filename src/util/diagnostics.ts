@@ -54,11 +54,13 @@ function refreshDiagnostics(document: vscode.TextDocument,
   vulnDiagnostics: vscode.DiagnosticCollection, analysisVulnerabilities: AnalysisVulnerability[]): void {
   const diagnostics: vscode.Diagnostic[] = [];
 
-  analysisVulnerabilities.forEach(analysisVulnerability => {
-    if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerabilities.file)) {
-      diagnostics.push(createDiagnostic(document, analysisVulnerability));
-    }
-  });
+  if (analysisVulnerabilities && analysisVulnerabilities.length >= 0) {
+    analysisVulnerabilities.forEach(analysisVulnerability => {
+      if (document && document.uri.fsPath === getFilepath(analysisVulnerability.vulnerabilities.file)) {
+        diagnostics.push(createDiagnostic(document, analysisVulnerability));
+      }
+    });
+  }
 
   vulnDiagnostics.set(document.uri, diagnostics);
 }
@@ -131,15 +133,17 @@ function createDiagnosticPosition(character: number,
 
 function subscribeToDocumentChanges(vulnDiagnostics: vscode.DiagnosticCollection,
   analysis: Analysis): void {
-  analysis.analysisVulnerabilities.forEach(analysisVulnerability => {
-    vscode.workspace.openTextDocument(getFilepath(analysisVulnerability.vulnerabilities.file)).then(document => {
-      refreshDiagnostics(
-        document,
-        vulnDiagnostics,
-        analysis.analysisVulnerabilities
-      );
+  if (analysis.analysisVulnerabilities && analysis.analysisVulnerabilities.length >= 0) {
+    analysis.analysisVulnerabilities.forEach(analysisVulnerability => {
+      vscode.workspace.openTextDocument(getFilepath(analysisVulnerability.vulnerabilities.file)).then(document => {
+        refreshDiagnostics(
+          document,
+          vulnDiagnostics,
+          analysis.analysisVulnerabilities
+        );
+      });
     });
-  });
+  }
 }
 
 function getDetails(vulnerability: Vulnerability): string {
