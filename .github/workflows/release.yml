@@ -37,6 +37,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
       - name: Patch version increment
         id: updated-version
         uses: Benbentwo/increment-semver@master
