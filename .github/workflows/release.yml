@@ -1,0 +1,92 @@
+# Copyright 2021 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: "Release type: M (Major); m (Minor); p (Path)."
+        required: true
+
+      horusecCLIversion:
+        description: "Version of horusec-cli for this release. Ex: 0.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Patch version increment
+        id: updated-version
+        uses: Benbentwo/increment-semver@master
+        with:
+          version-level: -${{ github.event.inputs.releaseType }}
+
+      - name: Normalizing version for package.json
+        run: echo "FORMATTED_VERSION=$(echo ${{ steps.updated-version.outputs.version }} | sed 's/v//')" >> $GITHUB_ENV
+
+      - name: Update project version on package.json
+        uses: jossef/action-set-json-field@v1
+        with:
+          file: package.json
+          field: version
+          value: ${{ env.FORMATTED_VERSION }}
+
+      - name: Update horusec-cli version on package.json
+        uses: jossef/action-set-json-field@v1
+        with:
+          file: package.json
+          field: engines.horusecCLI
+          value: horuszup/horusec-cli:v${{ github.event.inputs.horusecCLIversion }}
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -s -m "Release: bumping ${{ steps.updated-version.outputs.version }}"
+          git tag ${{ steps.updated-version.outputs.version }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ github.token }}
+          tags: true
+          branch: main
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ steps.updated-version.outputs.version }}
+          release_name: ${{ steps.updated-version.outputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: Publish to Visual Studio Marketplace
+        uses: HaaLeo/publish-vscode-extension@v0
+        with:
+          pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+          registryUrl: https://marketplace.visualstudio.com
