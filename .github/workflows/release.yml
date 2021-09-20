@@ -60,7 +60,7 @@ jobs:
           field: engines.horusecCLI
           value: horuszup/horusec-cli:v${{ github.event.inputs.horusecCLIversion }}
 
-      - name: Commit changes
+      - name: Commit changes on main
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -68,12 +68,31 @@ jobs:
           git commit -s -m "Release: bumping ${{ steps.updated-version.outputs.version }}"
           git tag ${{ steps.updated-version.outputs.version }}
 
-      - name: Push changes
+      - name: Push changes to main
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ github.token }}
           tags: true
           branch: main
+
+      - name: Get Minor version
+        if: github.event.inputs.releaseType != 'p'
+        run: |
+          version=${{ steps.updated-version.outputs.version }}
+          echo "MINOR_VERSION=$(echo ${version%.*})" >> $GITHUB_ENV
+
+      - name: Create release branch
+        if: github.event.inputs.releaseType != 'p'
+        run: |
+          git branch release/${{ env.MINOR_VERSION }}
+
+      - name: Push release branch
+        if: github.event.inputs.releaseType != 'p'
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ github.token }}
+          tags: true
+          branch: release/${{ env.MINOR_VERSION }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -82,5 +101,5 @@ jobs:
         with:
           tag_name: ${{ steps.updated-version.outputs.version }}
           release_name: ${{ steps.updated-version.outputs.version }}
-          draft: false
+          draft: true
           prerelease: false
