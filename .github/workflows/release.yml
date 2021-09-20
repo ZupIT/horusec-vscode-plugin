@@ -37,11 +37,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up nodejs
-        uses: actions/setup-node@v2
-        with:
-          node-version: 12
-
       - name: Patch version increment
         id: updated-version
         uses: Benbentwo/increment-semver@master
@@ -89,9 +84,3 @@ jobs:
           release_name: ${{ steps.updated-version.outputs.version }}
           draft: false
           prerelease: false
-
-      - name: Publish to Visual Studio Marketplace
-        uses: HaaLeo/publish-vscode-extension@v0
-        with:
-          pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
-          registryUrl: https://marketplace.visualstudio.com
