@@ -68,7 +68,10 @@ jobs:
         with:
           push: true
           signoff: true
-          default_author: user_info
+          author_name: Horusec
+          author_email: horusec@zup.com.br
+          committer_name: Horusec
+          committer_email: horusec@zup.com.br
           tag: ${{ steps.updated-version.outputs.version }}
 
       - name: Create release branch
