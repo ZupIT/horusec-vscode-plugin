@@ -63,16 +63,24 @@ jobs:
           json -I -f package.json -e 'this.version="${{ steps.updated-version.outputs.strippedVersion }}"'
           json -I -f package.json -e 'this.engines.horusecCLI="horuszup/horusec-cli:v${{ github.event.inputs.horusecCLIversion }}"'
 
+      - name: Push changes
+        run: |
+          git config --list
+
       - name: Commit changes
         uses: EndBug/add-and-commit@v7.3.0
         with:
-          push: true
+          push: false
           signoff: true
           author_name: Horusec
           author_email: horusec@zup.com.br
           committer_name: Horusec
           committer_email: horusec@zup.com.br
           tag: ${{ steps.updated-version.outputs.version }}
+
+      - name: Push changes
+        run: |
+          git push origin main
 
       - name: Create release branch
         if: github.event.inputs.releaseType != 'p'
