@@ -1,0 +1,94 @@
+# Copyright 2021 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: "Release type: M (Major); m (Minor); p (Path)."
+        required: true
+
+      horusecCLIversion:
+        description: "Version of horusec-cli for this release. Ex: 0.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Version increment
+        id: updated-version
+        run: |
+          curl https://raw.githubusercontent.com/ZupIT/horusec-devkit/main/scripts/semver.sh -o /tmp/semver.sh
+          chmod +x /tmp/semver.sh
+          /tmp/semver.sh -${{ github.event.inputs.releaseType }}
+
+      - name: Update versions on package.json
+        run: |
+          npm install -g json
+          json -I -f package.json -e 'this.version="${{ steps.updated-version.outputs.strippedVersion }}"'
+          json -I -f package.json -e 'this.engines.horusecCLI="horuszup/horusec-cli:v${{ github.event.inputs.horusecCLIversion }}"'
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7.3.0
+        with:
+          push: true
+          signoff: true
+          author_name: Horusec
+          author_email: horusec@zup.com.br
+          committer_name: Horusec
+          committer_email: horusec@zup.com.br
+          tag: ${{ steps.updated-version.outputs.version }}
+
+      - name: Create release branch
+        if: github.event.inputs.releaseType != 'p'
+        run: |
+          git branch ${{ steps.updated-version.outputs.releaseBranchName }}
+          git push origin ${{ steps.updated-version.outputs.releaseBranchName }}
+
+      - name: Create github release
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.event.repository.full_name }}/releases \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --header 'Accept: application/vnd.github.v3+json' \
+          --data '{
+              "tag_name": "${{ steps.updated-version.outputs.version }}",
+              "draft": true
+            }' \
+          --fail
