@@ -65,7 +65,7 @@ jobs:
           json -I -f package.json -e 'this.engines.horusecCLI="horuszup/horusec-cli:v${{ github.event.inputs.horusecCLIversion }}"'
 
       - name: Commit changes
-        uses: EndBug/add-and-commit@v7.3.0
+        uses: EndBug/add-and-commit@v7.4.0
         with:
           push: true
           signoff: true
