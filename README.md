@@ -4,23 +4,40 @@
 <p></p>
 <p></p>
 
-# Horusec-Extensions
+# **Horusec-Extensions**
 
-This project contains horusec extensions for development interfaces, which you can use to increase your productivity and make the tool easier to use.
+This is [**Horusec-CLI**](https://github.com/ZupIT/horusec) extension for integrated development environment (IDE) Visual Studio Code, you can perform analysis without installing a binary in your machine. 
 
-## What is Horusec?
-Horusec is an open source tool that improves identification of vulnerabilities in your project with just one command.
+Kubernetes: Tool that orchestrates the application's containers.
 
-### For more details see our [DOCUMENTATION](https://zup-products.gitbook.io/horusec)
+Result: Analysis result performed by Horusec-CLI or Horusec-VsCode.
 
-## Contributing
+## **Usage**
+These extensions are for interfaces development, you can use to increase your productivity and make the tool easier to use.
 
-Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to horusec.
+## **Documentation**
 
-## Communication
+For more information about Horusec, please check out the [**documentation**](https://horusec.io/docs/).
 
-We have a few channels for contact, feel free to reach out to us at:
 
-- [GitHub Issues](https://github.com/ZupIT/horusec-extensions/issues)
-- [Zup Open Source Forum](https://forum.zup.com.br)
+## **Contributing**
 
+If you want to contribute to this repository, access our [**Contributing Guide**](https://github.com/ZupIT/charlescd/blob/main/CONTRIBUTING.md). 
+And if you want to know more about Horusec, check out some of our other projects:
+
+
+- [**Horusec CLI**](https://github.com/ZupIT/horusec)
+- [**Horusec Devkit**](https://github.com/ZupIT/horusec-platform)
+- [**Horusec Engine**](https://github.com/ZupIT/horusec-engine)
+- [**Horusec Operator**](https://github.com/ZupIT/horusec-operator)
+- [**Horusec Admin**](https://github.com/ZupIT/horusec-admin)
+- [**Horusec VsCode**](https://github.com/ZupIT/horusec-vscode-plugin)
+
+## **Community**
+Feel free to reach out to us at:
+
+- [**GitHub Issues**](https://github.com/ZupIT/horusec-devkit/issues)
+- [**Zup Open Source Forum**](https://forum.zup.com.br)
+
+
+This project exists thanks to all the contributors. You rock! ❤️🚀
