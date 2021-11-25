@@ -43,6 +43,18 @@ jobs:
         with:
           node-version: 12
 
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Install Mage
+        run: go install github.com/magefile/mage@v1.11
+
+      # Compile a binary from the mage file and move it to the workflow go bin.
+      - name: Compile Mage
+        run: cd deployments/mage/ && mage -compile /home/runner/go/bin/mage-vscode
+
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v4
         with:
@@ -51,46 +63,66 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
+      # Run a script contained in the devkit repository that gets the latest release version and create an output
+      # containing the next versions.
       - name: Version increment
         id: updated-version
-        run: |
-          curl https://raw.githubusercontent.com/ZupIT/horusec-devkit/main/scripts/semver.sh -o /tmp/semver.sh
-          chmod +x /tmp/semver.sh
-          /tmp/semver.sh -${{ github.event.inputs.releaseType }} ${{ github.event.repository.full_name }}
+        run: mage-vscode UpVersions ${{ github.event.inputs.releaseType }}
+        env:
+          HORUSEC_REPOSITORY_ORG: ${{ github.repository_owner }}
+          HORUSEC_REPOSITORY_NAME: ${{ github.event.repository.name }}
 
-      - name: Update versions on package.json
-        run: |
-          npm install -g json
-          json -I -f package.json -e 'this.version="${{ steps.updated-version.outputs.strippedVersion }}"'
-          json -I -f package.json -e 'this.engines.horusecCLI="horuszup/horusec-cli:v${{ github.event.inputs.horusecCLIversion }}"'
+      # Checkout into the release branch, if not exist create one.
+      - name: Checkout Release Branch
+        run: mage-vscode CheckoutReleaseBranch ${{ steps.updated-version.outputs.nextReleaseBranchName }}
 
+      # This step updates the package.json to the new vs code plugin version, also updates the cli version passed
+      # in for the input informed.
+      - name: Update versioning files
+        run: mage-vscode UpdateVersioningFiles
+        env:
+          HORUSEC_CLI_VERSION: ${{ github.event.inputs.horusecCLIversion }}
+          HORUSEC_VSCODE_VERSION: ${{ steps.updated-version.outputs.nextReleaseVersion }}
+
+      # The changes made in the last step are committed to the branch that the workflow was triggered, this commit is not
+      # going to trigger any workflow cause the skip ci in the commit message.
       - name: Commit changes
         uses: EndBug/add-and-commit@v7.4.0
         with:
           push: true
           signoff: true
           author_name: Horusec
+          branch: ${{ steps.updated-version.outputs.nextReleaseBranchName }}
           author_email: horusec@zup.com.br
           committer_name: Horusec
           committer_email: horusec@zup.com.br
-          tag: ${{ steps.updated-version.outputs.version }}
-          message: '[skip ci] Update versioning file'
+          message: "versioning:release - [skip ci] automatic commit updating versioning files"
 
-      - name: Create release branch
-        if: github.event.inputs.releaseType != 'p'
-        run: |
-          git branch ${{ steps.updated-version.outputs.releaseBranchName }}
-          git push origin ${{ steps.updated-version.outputs.releaseBranchName }}
-
+      # Create a GitHub release for the repository using mage.
       - name: Create github release
-        run: |
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.event.repository.full_name }}/releases \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --header 'Accept: application/vnd.github.v3+json' \
-          --data '{
-              "tag_name": "${{ steps.updated-version.outputs.version }}",
-              "draft": true
-            }' \
-          --fail
+        run: mage-vscode CreateRelease
+        env:
+          HORUSEC_REPOSITORY_ORG: ${{ github.repository_owner }}
+          HORUSEC_REPOSITORY_NAME: ${{ github.event.repository.name }}
+          GITHUB_TOKEN: ${{ secrets.HORUSEC_PUSH_TOKEN }}
+          HORUSEC_VSCODE_VERSION: ${{ steps.updated-version.outputs.nextReleaseVersion }}
+
+      # This step gets the sha of last commit made, witch is the updating versioning files commit, after that creates a
+      # branch from the origin main and cherry pick this commit on it. This process need to occur only when the release
+      # workflow is started from a branch that isn't the main branch, for example a release branch.
+      # When the workflow it's triggered to run on main, the commit it's going to be made directly to the main branch.
+      - name: Cherry pick
+        id: cherry-pick
+        run: mage-vscode CherryPick
+
+      # This step utilizes an action to create a pull request with the branch that was cherry picked on the last step
+      # into the main branch. As the last commit, this also needs to run only when the release workflow is started from a
+      # branch that isn't the main branch. Others workflows should be skipped cause of the skip ci in the pull request title.
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: "${{ steps.cherry-pick.outputs.cherryPickBranchName }}"
+          destination_branch: "main"
+          pr_title: "versioning:release - [skip ci] automatic pull request updating versioning files"
+          pr_body: "This is a automatic pull request that contains changes to files that need to be updated with the new release version. Where the commit ${{ steps.cherry-pick.outputs.commitShaToPick }} was cherry picked from the release branch, which already contains all the necessary changes."
+          github_token: ${{ secrets.HORUSEC_PUSH_TOKEN }}
