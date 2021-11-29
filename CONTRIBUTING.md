@@ -141,6 +141,7 @@ Before contributing to this repository, please discuss the changes you wish to m
 If you want to add an improvement, a new feature or bugfix, follow the steps to contribute: 
 
 **Step 1:** Make sure your branch is based on main;
+
 **Step 2:** When opening an issue, choose a template to answer the questions regarding what you want to contribute: 
 - [**Bug Report**](https://github.com/ZupIT/horusec/blob/main/.github/ISSUE_TEMPLATE/bug_report.md)
 - [**Feature request**](https://github.com/ZupIT/horusec/blob/main/.github/ISSUE_TEMPLATE/feature_request.md)
@@ -162,12 +163,12 @@ Your pull request is approved when:
 - Pass all GitHub actions checking process (lint, test, coverage, license, build, e2e, security, dco).
 
 ### **After your pull request's approval**
-- If it is a bugfix, the team will perform the changes and there will be a new release.
+- If it is a bug fix, the team will perform the changes and there will be a new release.
 - If it is a feature, it will be in the next release. 
 
 ## **Community**
 
-- Do you have any question about Horusec in our [**mailing list**](horusec@zup.com.br) 
+- Do you have any question about Horusec? Send to our [**mailing list**](horusec@zup.com.br).
 - Let's chat in our [**forum**](https://forum.zup.com.br/c/en/horusec/14).
 
 Thank you for your contribution, you rock! 🚀
