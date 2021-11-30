@@ -122,14 +122,13 @@ go tool cover -html=coverage.out # Open coverage status in your browser
 #### **Repositories**
 Horusec has other repositories and you can check the README for each one of them: 
 
-- [**Charts**](https://github.com/ZupIT/charlescd/tree/main/circle-matcher)
+- [**Horusec**](https://github.com/ZupIT/horusec)
 - [**Devkit**](https://github.com/ZupIT/horusec-devkit)
+- [**Documentation**](https://github.com/ZupIT/horusec-docs)
 - [**Engine**](https://github.com/ZupIT/horusec-engine)
-- [**Jenkins**](https://github.com/ZupIT/horusec-jenkins-sharedlib)
 - [**Operator**](https://github.com/ZupIT/horusec-operator)
 - [**Platform**](https://github.com/ZupIT/horusec-platform)
-- [**VSCode plugin**](https://github.com/ZupIT/horusec-vscode-plugin)
-- [**Kotlin**](https://github.com/ZupIT/horusec-tree-sitter-kotlin)
+- [**Horusec C4-Model**](https://github.com/ZupIT/horusec-c4model)
 - [**Vulnerabilities**](https://github.com/ZupIT/horusec-examples-vulnerabilities)
 
 ### **First contribution**
@@ -168,7 +167,7 @@ Your pull request is approved when:
 
 ## **Community**
 
-- Do you have any question about Horusec? Send to our [**mailing list**](horusec@zup.com.br).
+- - Do you have any question about Horusec? Send to our e-mail **horusec@zup.com.br**.
 - Let's chat in our [**forum**](https://forum.zup.com.br/c/en/horusec/14).
 
 Thank you for your contribution, you rock! 🚀
