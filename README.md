@@ -6,6 +6,16 @@
 
 # **Horusec-Extensions**
 
+## **Table of contents**
+### 1. [**About**](#about)
+### 2. [**Usage**](#usage)
+### 3. [**Documentation**](#documentation)
+### 4. [**Contributing**](#contributing)
+### 5. [**License**](#license)
+### 6. [**Community**](#community)
+
+
+## **About**
 This is [**Horusec-CLI**](https://github.com/ZupIT/horusec) extension for integrated development environment (IDE) Visual Studio Code, you can perform analysis without installing a binary in your machine. 
 
 Kubernetes: Tool that orchestrates the application's containers.
@@ -22,22 +32,45 @@ For more information about Horusec, please check out the [**documentation**](htt
 
 ## **Contributing**
 
-If you want to contribute to this repository, access our [**Contributing Guide**](https://github.com/ZupIT/charlescd/blob/main/CONTRIBUTING.md). 
-And if you want to know more about Horusec, check out some of our other projects:
+If you want to contribute to this repository, access our [**Contributing Guide**](https://github.com/ZupIT/horusec-vscode-plugin/blob/main/CONTRIBUTING.md). 
 
 
-- [**Horusec CLI**](https://github.com/ZupIT/horusec)
-- [**Horusec Devkit**](https://github.com/ZupIT/horusec-platform)
-- [**Horusec Engine**](https://github.com/ZupIT/horusec-engine)
-- [**Horusec Operator**](https://github.com/ZupIT/horusec-operator)
-- [**Horusec Admin**](https://github.com/ZupIT/horusec-admin)
-- [**Horusec VsCode**](https://github.com/ZupIT/horusec-vscode-plugin)
+### **Developer Certificate of Origin - DCO**
+
+ This is a security layer for the project and for the developers. It is mandatory.
+ 
+ Follow one of these two methods to add DCO to your commits:
+ 
+**1. Command line**
+ Follow the steps: 
+ **Step 1:** Configure your local git environment adding the same name and e-mail configured at your GitHub account. It helps to sign commits manually during reviews and suggestions.
+
+ ```
+git config --global user.name “Name”
+git config --global user.email “email@domain.com.br”
+```
+**Step 2:** Add the Signed-off-by line with the `'-s'` flag in the git commit command:
+
+```
+$ git commit -s -m "This is my commit message"
+```
+
+**2. GitHub website**
+You can also manually sign your commits during GitHub reviews and suggestions, follow the steps below: 
+
+**Step 1:** When the commit changes box opens, manually type or paste your signature in the comment box, see the example:
+
+```
+Signed-off-by: Name < e-mail address >
+```
+
+For this method, your name and e-mail must be the same registered on your GitHub account.
+
+## **License**
+[**Apache License 2.0**](https://github.com/ZupIT/horusec-vscode-plugin/blob/main/LICENSE).
 
 ## **Community**
-Feel free to reach out to us at:
-
-- [**GitHub Issues**](https://github.com/ZupIT/horusec-devkit/issues)
-- [**Zup Open Source Forum**](https://forum.zup.com.br)
+Do you have any question about Horusec? Let's chat in our [**forum**](https://forum.zup.com.br/).
 
 
 This project exists thanks to all the contributors. You rock! ❤️🚀
