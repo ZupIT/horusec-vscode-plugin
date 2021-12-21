@@ -87,7 +87,7 @@ jobs:
       # The changes made in the last step are committed to the branch that the workflow was triggered, this commit is not
       # going to trigger any workflow cause the skip ci in the commit message.
       - name: Commit changes
-        uses: EndBug/add-and-commit@v7.4.0
+        uses: EndBug/add-and-commit@v7.5.0
         with:
           push: true
           signoff: true
