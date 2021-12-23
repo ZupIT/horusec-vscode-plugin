@@ -8,7 +8,7 @@
   "icon": "resources/horus_icon.png",
   "engines": {
     "vscode": "^1.51.0",
-    "horusecCLI": "horuszup/horusec-cli:v2.6.1"
+    "horusecCLI": "horuszup/horusec-cli:v2.6.7"
   },
   "categories": [
     "Other"
