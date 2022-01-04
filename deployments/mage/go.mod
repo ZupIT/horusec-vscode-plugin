@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/ZupIT/horusec-devkit v1.0.21
 	github.com/google/go-github/v40 v40.0.0
-	github.com/magefile/mage v1.11.0
+	github.com/magefile/mage v1.12.1
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 )
 
