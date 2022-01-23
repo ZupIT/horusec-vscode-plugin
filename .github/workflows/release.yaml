@@ -87,12 +87,11 @@ jobs:
       # The changes made in the last step are committed to the branch that the workflow was triggered, this commit is not
       # going to trigger any workflow cause the skip ci in the commit message.
       - name: Commit changes
-        uses: EndBug/add-and-commit@v7.5.0
+        uses: EndBug/add-and-commit@v8.0.1
         with:
           push: true
-          signoff: true
+          commit: --signoff
           author_name: Horusec
-          branch: ${{ steps.updated-version.outputs.nextReleaseBranchName }}
           author_email: horusec@zup.com.br
           committer_name: Horusec
           committer_email: horusec@zup.com.br
