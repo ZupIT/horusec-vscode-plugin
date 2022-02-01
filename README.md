@@ -10,9 +10,10 @@
 ### 1. [**About**](#about)
 ### 2. [**Usage**](#usage)
 ### 3. [**Documentation**](#documentation)
-### 4. [**Contributing**](#contributing)
-### 5. [**License**](#license)
-### 6. [**Community**](#community)
+### 4. [**Issues**](#issues)
+### 5. [**Contributing**](#contributing)
+### 6. [**License**](#license)
+### 7. [**Community**](#community)
 
 
 ## **About**
@@ -29,6 +30,9 @@ These extensions are for interfaces development, you can use to increase your pr
 
 For more information about Horusec, please check out the [**documentation**](https://horusec.io/docs/).
 
+## **Issues** 
+
+To open or track an issue for this project, in order to better coordinate your discussions, we recommend that you use the [**Issues tab**](https://github.com/ZupIT/horusec/issues) in the main [**Horusec-CLI**](https://github.com/ZupIT/horusec) repository.
 
 ## **Contributing**
 
