@@ -1,6 +1,6 @@
 <p></p>
 <p></p>
-<p align="center" margin="20 0"><a href="https://horusec.io/"><img src="assets/horusec_logo.png" alt="logo_header" width="65%" style="max-width:100%;"/></a></p>
+<p align="center" margin="20 0"><a href="https://horusec.io/"><img src="assets/horusec_logo.png" alt="logo_header" width="100%" style="max-width:100%;"/></a></p>
 <p></p>
 <p></p>
 
@@ -17,18 +17,33 @@
 
 
 ## **About**
-This is [**Horusec-CLI**](https://github.com/ZupIT/horusec) extension for integrated development environment (IDE) Visual Studio Code, you can perform analysis without installing a binary in your machine. 
 
-Kubernetes: Tool that orchestrates the application's containers.
-
-Result: Analysis result performed by Horusec-CLI or Horusec-VsCode.
+This repository contains a [**Horusec CLI**](https://github.com/ZupIT/horusec) extension for the integrated development environment (IDE) **Visual Studio Code**. With this extension, you will be able to perform a static code analysis (SAST) in search of vulnerabilities.
 
 ## **Usage**
-These extensions are for interfaces development, you can use to increase your productivity and make the tool easier to use.
+
+### Requirements
+
+You must have [**Docker**](https://www.docker.com/) installed, click [**here**](https://github.com/ZupIT/horusec#requirements) to check more detailed information about **Horusec-CLI** requirements.
+
+**Note:** The analysis works using Horusec docker image, if you use the [**disable docker**](https://docs.horusec.io/docs/tutorials/how-to-use-horusec-without-docker/) option, 
+Horusec only will execute the [**Horusec tools**](https://docs.horusec.io/docs/cli/analysis-tools/overview/#horusecs-tools), therefore, you need the Docker installed for analysis works properly.
+
+### Executing an analysis
+
+In the **Visual Studio Code** sidebar, click on the Horusec extension icon, then click on **Start analysis** button. To stop the analysis, you can click on the **Horusec stop** button.
+
+**Note:** If there is no path configured, the workspace path of the IDE will be analyzed.
+
+<img src="assets/usage-horusec.gif" alt="usage_gif" width="100%" style="max-width:100%;"/>
+
+### Configuration
+
+In this extension, we use a configuration file to customize Horusec usage. You can make this changes using the settings button, `F1` or directly on the [**config file**](https://docs.horusec.io/docs/cli/commands-and-flags/#1-configuration-file). All possible configs start with the `horusecCli` prefix.
 
 ## **Documentation**
 
-For more information about Horusec, please check out the [**documentation**](https://horusec.io/docs/).
+For more information about Horusec, please check out the [**documentation**](https://docs.horusec.io/docs/overview).
 
 ## **Issues** 
 
