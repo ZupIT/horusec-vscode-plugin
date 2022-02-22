@@ -82,7 +82,7 @@ jobs:
         run: mage-vscode UpdateVersioningFiles
         env:
           HORUSEC_CLI_VERSION: ${{ github.event.inputs.horusecCLIversion }}
-          HORUSEC_VSCODE_VERSION: ${{ steps.updated-version.outputs.nextReleaseVersion }}
+          HORUSEC_VSCODE_VERSION: ${{ steps.updated-version.outputs.nextReleaseVersionStripped }}
 
       # The changes made in the last step are committed to the branch that the workflow was triggered, this commit is not
       # going to trigger any workflow cause the skip ci in the commit message.
