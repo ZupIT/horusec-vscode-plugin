@@ -7,7 +7,7 @@
   "repository": "https://github.com/ZupIT/horusec-extensions/tree/master/horusec-vscode",
   "icon": "resources/horus_icon.png",
   "engines": {
-    "vscode": "^1.51.0",
+    "vscode": "^1.62.0",
     "horusecCLI": "horuszup/horusec-cli:v2.7.1"
   },
   "categories": [
