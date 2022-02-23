@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
-    - name: Set up Node 12
+    - name: Set up nodejs
       uses: actions/setup-node@v2
       with:
-        node-version: '12'
+        node-version: 14
       id: node
     - name: Check out code
       uses: actions/checkout@v2
